@@ -126,10 +126,11 @@ void readCommand(int argc, char* argv[])
 
 	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
 	OthelloBot othelloBot{ color, maxDepth, heuristic, moveTime };
-	std::cout << othelloBot << '\n';
+	//std::cout << othelloBot << '\n';
+
+	movePossibilities(othelloBot);
 
 	std::string command;
-
 	while (std::getline(std::cin, command)) {
 		toUpper(command);
 
@@ -139,11 +140,13 @@ void readCommand(int argc, char* argv[])
 			break;
 		}
 
-		if (command.size() != 2 || column.find(command[0]) == std::string::npos || row.find(command[1]) == std::string::npos)
+		if (command.size() != 2 || COLUMN.find(command[0]) == std::string::npos || ROW.find(command[1]) == std::string::npos)
 		{
 			std::cout << "Not valid command!\n";
 			continue;
 		}
 		moveDisk(othelloBot, command);
+
+		movePossibilities(othelloBot);
 	}
 }
