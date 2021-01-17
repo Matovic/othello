@@ -11,7 +11,8 @@
 #include "OthelloBot.hpp"
 
 // Create Othello bot with given color
-OthelloBot::OthelloBot(const int& color) : m_color{ color }
+OthelloBot::OthelloBot(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime) 
+	: m_color{ color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }
 {
 }
 

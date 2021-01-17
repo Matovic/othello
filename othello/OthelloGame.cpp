@@ -10,6 +10,8 @@
 #include <iostream>
 #include <vector>
 #include "OthelloGame.hpp"
+#include "OthelloBot.hpp"
+#include "OthelloGameLogic.hpp"
 
 // Makes all characters uppercase in given string.
 void toUpper(std::string& str)
@@ -43,7 +45,7 @@ std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[])
 	return std::make_tuple(color, maxDepth, heuristic, moveTime);
 }
 
-// Process command line arguments into a tuple of color, max depth, heuristic function and time.
+// Processes command line arguments into a tuple of color, max depth, heuristic function and time.
 std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[])
 {
 	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
@@ -87,6 +89,7 @@ std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[])
 	return std::make_tuple(color, maxDepth, heuristic, moveTime);
 }
 
+// Checks if given command line arguments are fit to be parameters for Othello game.
 int checkParameters(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
 {
 	if (color < 0)
@@ -113,4 +116,36 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 		return 1;
 	}
 	return 0;
+}
+
+// Reads user's commands
+void readCommand(int argc, char* argv[])
+{
+	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
+	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
+
+	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
+	OthelloBot othelloBot{ color, maxDepth, heuristic, moveTime };
+	othelloBot.printGame();
+
+	std::string command;
+	std::string column = "ABCDEFGH", row = "12345678";
+
+	while (std::getline(std::cin, command)) {
+		toUpper(command);
+
+		if (!command.compare("STOP"))
+		{
+			std::cout << "\nGame stopped, you lost!\n";
+			break;
+		}
+
+		if (command.size() != 2 || column.find(command[0]) == std::string::npos || row.find(command[1]) == std::string::npos)
+		{
+			std::cout << "Not valid command!\n";
+			continue;
+		}
+
+
+	}
 }

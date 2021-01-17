@@ -33,7 +33,7 @@ bool isStringInt(const std::string& str);
 std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[]);
 
 /**
-* Process command line arguments into a tuple of color, max depth, heuristic function and time.
+* Processes command line arguments into a tuple of color, max depth, heuristic function and time.
 * @param argument count
 * @param argument vector
 * @return tuple of color, max depth, heuristic function, time
@@ -41,7 +41,7 @@ std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[]);
 std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[]);
 
 /**
-* Check if given command line arguments are fit to be parameters for Othello game.
+* Checks if given command line arguments are fit to be parameters for Othello game.
 * @param color 
 * @param maxDepth
 * @param heuristic function
@@ -49,3 +49,11 @@ std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[]);
 * @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
 */
 int checkParameters(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
+
+/**
+* Reads user's commands
+* @param argument count
+* @param argument vector
+* @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
+*/
+void readCommand(int argc, char* argv[]);

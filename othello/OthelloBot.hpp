@@ -24,7 +24,7 @@ public:
 	* 0 - black color.
 	* -1 - not valid command, exit program.
 	*/
-	OthelloBot(const int& color);
+	OthelloBot(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
 
 	/**
 	* Destroy Othello bot object.
@@ -49,6 +49,6 @@ public:
 	void printGame();
 
 private:
-	int m_color;			//1 - white, 0 - black
+	int m_color, m_maxDepth, m_heuristic, m_moveTime;			
 	std::string m_game = "---------------------------OX------XO--------------------------------";
 };
