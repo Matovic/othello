@@ -33,20 +33,15 @@ const std::string& OthelloBot::getGameState()
 	return m_game;
 }
 
-// Print current game state on console
-void OthelloBot::printGame()
+// Writes current game state to stream.
+std::ostream& operator<<(std::ostream& lhs, const OthelloBot& rhs)
 {
-	std::cout << "  a b c d e f g h\n";
-	int row = 1;
-	std::cout << row++ << ' ';
-	for (size_t i = 0; i < 64; ++i)
+	lhs << "  a b c d e f g h";
+	for (size_t i = 0, row = 0; i < 64; ++i)
 	{
-		if (i != 0 && (i % 8 == 0))
-		{
-			std::cout << '\n' << row << ' ';
-			++row;
-		}
-		std::cout << m_game[i] << ' ';
+		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
+		lhs << rhs.m_game[i] << ' ';
 	}
-	std::cout << '\n';
+	lhs << '\n';
+	return lhs;
 }

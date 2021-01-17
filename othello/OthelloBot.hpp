@@ -23,6 +23,9 @@ public:
 	* 1 - white color.
 	* 0 - black color.
 	* -1 - not valid command, exit program.
+	* @param maxDepth integer to specify depth of minmax.
+	* @param heuristic integer to specify heuristic function.
+	* @param moveTime integer to specify time of player's move.
 	*/
 	OthelloBot(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
 
@@ -43,12 +46,17 @@ public:
 	*/
 	const std::string& getGameState();
 
-	/**
-	* Print current game state on console
-	*/
-	void printGame();
-
 private:
 	int m_color, m_maxDepth, m_heuristic, m_moveTime;			
 	std::string m_game = "---------------------------OX------XO--------------------------------";
+
+	friend std::ostream& operator<<(std::ostream&, const OthelloBot&);
 };
+
+/**
+* Writes current game state to stream.
+* @param lhs stream write
+* @param rhs object OthelloBot to be written to stream
+* @return lhs
+*/
+std::ostream& operator<<(std::ostream& lhs, const OthelloBot& rhs);
