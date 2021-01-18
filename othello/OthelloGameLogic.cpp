@@ -11,6 +11,22 @@
 #include <vector>
 #include "OthelloGameLogic.hpp"
 
+int checkUp(const std::string& gameBoard, const size_t& diskIndex, const int& color)
+{
+	if (diskIndex > 55)
+		return -1;
+	char opponentDisk = 'X';
+	if (!color) opponentDisk = 'O';
+
+	if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] == '-')
+		return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkUp(gameBoard, diskIndex + 8, color);
+
+	return static_cast<int>(diskIndex);
+}
+
 /*
 std::vector<int> checkVertical(const std::string& gameBoard, const size_t& diskIndex, const int& color)
 {
@@ -22,7 +38,7 @@ std::vector<int> checkVertical(const std::string& gameBoard, const size_t& diskI
 }*/
 
 // 
-void movePossibilities(OthelloBot& othelloBot)
+void getValidMoves(OthelloBot& othelloBot)
 {
 	std::string possibleGameState = othelloBot.getGameState();
 	auto movePosition = possibleGameState.find('O');

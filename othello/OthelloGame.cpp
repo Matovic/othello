@@ -128,7 +128,7 @@ void readCommand(int argc, char* argv[])
 	OthelloBot othelloBot{ color, maxDepth, heuristic, moveTime };
 	//std::cout << othelloBot << '\n';
 
-	movePossibilities(othelloBot);
+	getValidMoves(othelloBot);
 
 	std::string command;
 	while (std::getline(std::cin, command)) {
@@ -147,6 +147,6 @@ void readCommand(int argc, char* argv[])
 		}
 		moveDisk(othelloBot, command);
 
-		movePossibilities(othelloBot);
+		getValidMoves(othelloBot);
 	}
 }
