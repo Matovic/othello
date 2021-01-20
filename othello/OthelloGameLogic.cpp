@@ -2,7 +2,7 @@
 * Course: Application programming in C++ 2020/2021
 * Purpose: Bot for the game Othello, with console visualization.
 *
-* @file OthelloGameLogic.hpp
+* @file OthelloGameLogic.cpp
 * @author Erik Matovic
 * @version 31/01/2021
 */
@@ -11,6 +11,7 @@
 #include <vector>
 #include "OthelloGameLogic.hpp"
 
+// Checks possible move on Othello board by going up.
 int checkUp(const std::string& gameBoard, const size_t& diskIndex, const int& color)
 {
 	if (diskIndex > 55)
@@ -37,7 +38,7 @@ std::vector<int> checkVertical(const std::string& gameBoard, const size_t& diskI
 	return vectorDiskIndex;
 }*/
 
-// 
+// Gets all possible moves on Othello board.
 void getValidMoves(OthelloBot& othelloBot)
 {
 	std::string possibleGameState = othelloBot.getGameState();
@@ -47,7 +48,7 @@ void getValidMoves(OthelloBot& othelloBot)
 	std::cout << possibleGameState << '\n';
 }
 
-// 
+// Moves disk on Othello board based on given command.
 void moveDisk(OthelloBot& othelloBot, const std::string& command)
 {
 	std::cout << command << '\n';
