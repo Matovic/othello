@@ -46,6 +46,13 @@ public:
 	*/
 	const std::string& getGameState();
 
+	/**
+	* Set state of a game board.
+	* @param gameBoardIndex index to be changed.
+	* @param disk to written on game board.
+	*/
+	void setGameState(const int& gameBoardIndex, const char& disk);
+
 private:
 	int m_color, m_maxDepth, m_heuristic, m_moveTime;			
 	std::string m_game = "---------------------------OX------XO--------------------------------";

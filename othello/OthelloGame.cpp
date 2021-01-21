@@ -118,6 +118,13 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 	return 0;
 }
 
+// Gets index from valid user's command
+int getIndexFromCommand(const std::string& command)
+{
+	int columnIndex = command[0] - 'A', rowIndex = command[1] - '1';
+	return rowIndex * 8 + columnIndex;
+}
+
 // Reads user's commands
 void readCommand(int argc, char* argv[])
 {
@@ -128,7 +135,7 @@ void readCommand(int argc, char* argv[])
 	OthelloBot othelloBot{ color, maxDepth, heuristic, moveTime };
 	//std::cout << othelloBot << '\n';
 
-	getValidMoves(othelloBot);
+	std::vector<int> vectorValidMove = getValidMoves(othelloBot, color);
 
 	std::string command;
 	while (std::getline(std::cin, command)) {
@@ -145,8 +152,14 @@ void readCommand(int argc, char* argv[])
 			std::cout << "Not valid command!\n";
 			continue;
 		}
-		moveDisk(othelloBot, command);
+		int gameBoardIndex = getIndexFromCommand(command);
+		if (!isIntInVector(vectorValidMove, gameBoardIndex))
+		{
+			std::cout << "Not possible move!\n";
+			continue;
+		}
+		moveDisk(othelloBot, gameBoardIndex, color);
 
-		getValidMoves(othelloBot);
+		vectorValidMove = getValidMoves(othelloBot, color);
 	}
 }

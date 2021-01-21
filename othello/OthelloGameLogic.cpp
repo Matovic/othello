@@ -9,32 +9,82 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "OthelloGameLogic.hpp"
+
+// Checks possible move on Othello board by going left.
+int checkLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	size_t currentColumn = diskIndex % 8;		// get current collumn in Othello board
+	if (currentColumn == 0)
+		return -1;								// if currentColumn is first column, return -1
+
+	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
+	//	return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkLeft(gameBoard, diskIndex - 1, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
+
+// Checks possible move on Othello board by going right.
+int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	size_t currentColumn = diskIndex % 8;		// get current collumn in Othello board
+	if (currentColumn / 7)
+		return -1;								// if currentColumn is last column, return -1
+
+	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
+	//	return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkRight(gameBoard, diskIndex + 1, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
 
 // Checks possible move on Othello board by going up.
 int checkUp(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
 {
-	if (diskIndex > 55)
+	if (diskIndex < 8)
 		return -1;
 
-	if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
-		return -1;
+	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
+	//	return -1;
 
 	if (gameBoard[diskIndex] == opponentDisk)
 		return checkUp(gameBoard, diskIndex - 8, opponentDisk);
 
-	return static_cast<int>(diskIndex);
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
 }
 
-/*
-std::vector<int> checkVertical(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+// Checks possible move on Othello board by going down.
+int checkDown(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
 {
-	std::vector<int> vectorDiskIndex;
-	if (gameBoard[diskIndex] > 7) checkDown(gameBoard, diskIndex, opponentDisk);
-	if (gameBoard[diskIndex] < 56) checkUp(gameBoard, diskIndex, opponentDisk);
+	if (diskIndex > 55)
+		return -1;
 
-	return vectorDiskIndex;
-}*/
+	/*if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
+		return -1;*/
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkDown(gameBoard, diskIndex + 8, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
 
 // Checks all directions for possible moves on Othello board.
 std::vector<int> checkDirections(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
@@ -42,52 +92,88 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 	std::vector<int> vectorValidMoves;// { static_cast<int>(diskIndex) };
 	gameBoard, diskIndex, opponentDisk;
 	int tmp = -1;
-	// go up
-	tmp = checkUp(gameBoard, diskIndex - 8, opponentDisk);
-	if (tmp != -1) vectorValidMoves.insert(vectorValidMoves.end(), tmp);
 
+	// go up
+	if (diskIndex > 7 && gameBoard[diskIndex - 8] == opponentDisk)
+	{
+		tmp = checkUp(gameBoard, diskIndex - 8, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// go down
+	if (diskIndex < 56 && gameBoard[diskIndex + 8] == opponentDisk)
+	{
+		tmp = checkDown(gameBoard, diskIndex + 8, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// go left
+	if (diskIndex % 8 != 0 && gameBoard[diskIndex - 1] == opponentDisk)
+	{
+		tmp = checkLeft(gameBoard, diskIndex - 1, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// go right
+	if (diskIndex % 8 != 7 && gameBoard[diskIndex + 1] == opponentDisk)
+	{
+		tmp = checkRight(gameBoard, diskIndex + 1, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
 
 	return vectorValidMoves;
 }
 
 // Gets all possible moves on Othello board.
-std::vector<int> getValidMoves(OthelloBot& othelloBot)
+std::vector<int> getValidMoves(OthelloBot& othelloBot, const int& color)
 {
 	std::string possibleGameState = othelloBot.getGameState();
-	size_t pos = 0;
 	std::vector<int> vectorValidMoves;								// possible indexes of game state
-	char opponentDisk = 'X';
-	if (!othelloBot.getColor()) opponentDisk = 'O';
+	char opponentDisk = 'X', myDisk = 'O';
+
+	if (!color)
+	{
+		opponentDisk = 'O';
+		myDisk = 'X';
+	}
+
+	size_t pos = 0;
 	while (1)
 	{
-		size_t movePosition = possibleGameState.find(opponentDisk, pos);
-		if (movePosition == std::string::npos) break;
+		size_t movePosition = possibleGameState.find(myDisk, pos);			// pos of my disk
 
-		std::vector<int> tmp = checkDirections(possibleGameState, movePosition, 0);
+		if (movePosition == std::string::npos) 
+			break;
+
+		std::vector<int> tmp = checkDirections(possibleGameState, movePosition, opponentDisk);
 		vectorValidMoves.insert(vectorValidMoves.end(), tmp.begin(), tmp.end());
 		
-
 		pos = movePosition + 1;
 	}
-
-	for (int x : vectorValidMoves)
-	{
-		possibleGameState[x] = '*';
-		//std::cout << x << ' ' << opponentDisk;
-	}
-	std::cout << '\n';
-
-	//std::cout << "FIND:" << pos << '\n';
-	printGameState(possibleGameState);
-
+	showPossibleMoves(possibleGameState, vectorValidMoves);
 	return vectorValidMoves;
 }
 
-// Moves disk on Othello board based on given command.
-void moveDisk(OthelloBot& othelloBot, const std::string& command)
+// Shows possible moves to the player on game board.
+void showPossibleMoves(std::string& possibleGameState, const std::vector<int>& vectorValidMoves)
 {
-	std::cout << command << '\n';
-	std::cout << '\n' << othelloBot << '\n';
+	for (int x : vectorValidMoves)
+		possibleGameState[x] = '*';
+	std::cout << '\n';
+	printGameState(possibleGameState);
+}
+
+// Moves disk on Othello board based on given command.
+void moveDisk(OthelloBot& othelloBot, const int& gameBoardIndex, const int& color)
+{
+	char disk = 'O';
+	if (!color)	disk = 'X';
+
+	othelloBot.setGameState(gameBoardIndex, disk);
 }
 
 
@@ -101,4 +187,10 @@ void printGameState(const std::string& gameState)
 		std::cout << gameState[i] << ' ';
 	}
 	std::cout << '\n';
+}
+
+// Checks if given vector has already element with value of given integer.
+int isIntInVector(const std::vector<int>& v, const int& iValue)
+{
+	return std::find(v.begin(), v.end(), iValue) != v.end();
 }

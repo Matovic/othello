@@ -12,7 +12,7 @@
 
 // Create Othello bot with given color
 OthelloBot::OthelloBot(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime) 
-	: m_color{ color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }
+	: m_color{ !color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }
 {
 }
 
@@ -31,6 +31,12 @@ const int& OthelloBot::getColor()
 const std::string& OthelloBot::getGameState()
 {
 	return m_game;
+}
+
+// Set state of a game board.
+void OthelloBot::setGameState(const int& gameBoardIndex, const char& disk)
+{
+	this->m_game[gameBoardIndex] = disk;
 }
 
 // Writes current game state to stream.

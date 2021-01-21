@@ -57,3 +57,10 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 * @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
 */
 void readCommand(int argc, char* argv[]);
+
+/**
+* Gets index from valid user's command
+* @param command is valid user's command 
+* @return index to be used on Othello game board
+*/
+int getIndexFromCommand(const std::string& command);

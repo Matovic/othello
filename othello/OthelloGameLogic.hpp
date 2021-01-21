@@ -61,34 +61,6 @@ int checkLeft(const std::string& gameBoard, const size_t& diskIndex, const char&
 int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
 
 /**
-* Checks all vertical moves on Othello board.
-* @param gameBoard represents board with O for being white disk and X being black disk
-* @param diskIndex represents index on game board to be checked
-* @param opponentDisk represents current disk color
-* @return vector of integers with all possible indexes on gameBoard
-*/
-//std::vector<int> checkVertical(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
-
-/**
-* Checks all horizontal moves on Othello board.
-* @param gameBoard represents board with O for being white disk and X being black disk
-* @param diskIndex represents index on game board to be checked
-* @param opponentDisk represents current disk color
-* @return vector of integers with all possible indexes on gameBoard
-*/
-//std::vector<int> checkHorizontal(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
-
-/**
-* Checks all diagonal moves on Othello board.
-* @param gameBoard represents board with O for being white disk and X being black disk
-* @param diskIndex represents index on game board to be checked
-* @param opponentDisk represents current disk color
-* @return vector of integers with all possible indexes on gameBoard
-*/
-//std::vector<int> checkDiagonal(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
-
-
-/**
 * Checks all directions for possible moves on Othello board.
 * @param gameBoard represents board with O for being white disk and X being black disk
 * @param diskIndex represents index on game board to be checked
@@ -100,20 +72,37 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 /**
 * Gets all possible moves on Othello board.
 * @param othelloBot object of class OthelloBot
+* @param color integer to specify color of a disk
 * @return vector of valid indexes representing valid moves on Othello board
 */
-std::vector<int> getValidMoves(OthelloBot& othelloBot);
+std::vector<int> getValidMoves(OthelloBot& othelloBot, const int& color);
 
 /**
 * Moves disk on Othello board based on given command.
 * @param othelloBot object of class OthelloBot
-* @param command to move disk
+* @param gameBoardIndex to move disk
+* @param color integer to specify color of a disk
 * @return
 */
-void moveDisk(OthelloBot& othelloBot, const std::string& command);
+void moveDisk(OthelloBot& othelloBot, const int& gameBoardIndex, const int& color);
 
 /**
 * Writes current game state to output stream on a console.
 * @param gameState represents current Othello board with O for being white disk and X being black disk
 */
 void printGameState(const std::string& gameState);
+
+/**
+* Checks if given vector has already element with value of given integer.
+* @param v vector of integers
+* @param iValue integer value
+* @return 0, if vector has no such element, or 1, if vector already has element with given value
+*/
+int isIntInVector(const std::vector<int>& v, const int& iValue);
+
+/**
+* Shows possible moves to the player on game board.
+* @param possibleGameState to be shown
+* @param vectorValidMoves with possible user's moves
+*/
+void showPossibleMoves(std::string& possibleGameState, const std::vector<int>& vectorValidMoves);
