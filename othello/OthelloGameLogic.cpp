@@ -19,9 +19,6 @@ int checkLeft(const std::string& gameBoard, const size_t& diskIndex, const char&
 	if (currentColumn == 0)
 		return -1;								// if currentColumn is first column, return -1
 
-	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
-	//	return -1;
-
 	if (gameBoard[diskIndex] == opponentDisk)
 		return checkLeft(gameBoard, diskIndex - 1, opponentDisk);
 
@@ -38,9 +35,6 @@ int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char
 	if (currentColumn / 7)
 		return -1;								// if currentColumn is last column, return -1
 
-	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
-	//	return -1;
-
 	if (gameBoard[diskIndex] == opponentDisk)
 		return checkRight(gameBoard, diskIndex + 1, opponentDisk);
 
@@ -55,9 +49,6 @@ int checkUp(const std::string& gameBoard, const size_t& diskIndex, const char& o
 {
 	if (diskIndex < 8)
 		return -1;
-
-	//if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
-	//	return -1;
 
 	if (gameBoard[diskIndex] == opponentDisk)
 		return checkUp(gameBoard, diskIndex - 8, opponentDisk);
@@ -74,11 +65,68 @@ int checkDown(const std::string& gameBoard, const size_t& diskIndex, const char&
 	if (diskIndex > 55)
 		return -1;
 
-	/*if (gameBoard[diskIndex] != opponentDisk && gameBoard[diskIndex] != '-')
-		return -1;*/
-
 	if (gameBoard[diskIndex] == opponentDisk)
 		return checkDown(gameBoard, diskIndex + 8, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
+
+// Checks possible move on Othello board by going diagonal up and left.
+int checkDiagonalUpLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	if (diskIndex < 8 || diskIndex % 8 == 0)
+		return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkDiagonalUpLeft(gameBoard, diskIndex - 9, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
+
+// Checks possible move on Othello board by going diagonal up and right.
+int checkDiagonalUpRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	if (diskIndex < 8 || diskIndex % 8 == 7)
+		return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkDiagonalUpRight(gameBoard, diskIndex - 7, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
+
+// Checks possible move on Othello board by going diagonal down and left.
+int checkDiagonalDownLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	if (diskIndex > 55 || diskIndex % 8 == 0)
+		return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkDiagonalDownLeft(gameBoard, diskIndex + 7, opponentDisk);
+
+	if (gameBoard[diskIndex] == '-')
+		return static_cast<int>(diskIndex);
+
+	return -1;
+}
+
+// Checks possible move on Othello board by going diagonal down and right.
+int checkDiagonalDownRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
+{
+	if (diskIndex > 55 || diskIndex % 8 == 7)
+		return -1;
+
+	if (gameBoard[diskIndex] == opponentDisk)
+		return checkDiagonalDownRight(gameBoard, diskIndex + 9, opponentDisk);
 
 	if (gameBoard[diskIndex] == '-')
 		return static_cast<int>(diskIndex);
@@ -89,11 +137,11 @@ int checkDown(const std::string& gameBoard, const size_t& diskIndex, const char&
 // Checks all directions for possible moves on Othello board.
 std::vector<int> checkDirections(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
 {
-	std::vector<int> vectorValidMoves;// { static_cast<int>(diskIndex) };
+	std::vector<int> vectorValidMoves;
 	gameBoard, diskIndex, opponentDisk;
 	int tmp = -1;
 
-	// go up
+	// check up
 	if (diskIndex > 7 && gameBoard[diskIndex - 8] == opponentDisk)
 	{
 		tmp = checkUp(gameBoard, diskIndex - 8, opponentDisk);
@@ -101,7 +149,7 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
 	}
 
-	// go down
+	// check down
 	if (diskIndex < 56 && gameBoard[diskIndex + 8] == opponentDisk)
 	{
 		tmp = checkDown(gameBoard, diskIndex + 8, opponentDisk);
@@ -109,7 +157,7 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
 	}
 
-	// go left
+	// check left
 	if (diskIndex % 8 != 0 && gameBoard[diskIndex - 1] == opponentDisk)
 	{
 		tmp = checkLeft(gameBoard, diskIndex - 1, opponentDisk);
@@ -117,10 +165,42 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
 	}
 
-	// go right
+	// check right
 	if (diskIndex % 8 != 7 && gameBoard[diskIndex + 1] == opponentDisk)
 	{
 		tmp = checkRight(gameBoard, diskIndex + 1, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// check diagonal up-left
+	if (diskIndex > 7 && diskIndex % 8 != 0 && gameBoard[diskIndex - 9] == opponentDisk)
+	{
+		tmp = checkDiagonalUpLeft(gameBoard, diskIndex - 9, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// check diagonal up-right
+	if (diskIndex > 7 && diskIndex % 8 != 7 && gameBoard[diskIndex - 7] == opponentDisk)
+	{
+		tmp = checkDiagonalUpRight(gameBoard, diskIndex - 7, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// check diagonal down-left
+	if (diskIndex < 56 && diskIndex % 8 != 0 && gameBoard[diskIndex + 7] == opponentDisk)
+	{
+		tmp = checkDiagonalDownLeft(gameBoard, diskIndex + 7, opponentDisk);
+		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
+			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
+	}
+
+	// check diagonal down-right
+	if (diskIndex < 56 && diskIndex % 8 != 7 && gameBoard[diskIndex + 9] == opponentDisk)
+	{
+		tmp = checkDiagonalDownRight(gameBoard, diskIndex + 9, opponentDisk);
 		if (tmp != -1 && !isIntInVector(vectorValidMoves, tmp))
 			vectorValidMoves.insert(vectorValidMoves.end(), tmp);
 	}
@@ -132,7 +212,7 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 std::vector<int> getValidMoves(OthelloBot& othelloBot, const int& color)
 {
 	std::string possibleGameState = othelloBot.getGameState();
-	std::vector<int> vectorValidMoves;								// possible indexes of game state
+	std::vector<int> vectorValidMoves;										// possible indexes of game state
 	char opponentDisk = 'X', myDisk = 'O';
 
 	if (!color)
@@ -144,7 +224,7 @@ std::vector<int> getValidMoves(OthelloBot& othelloBot, const int& color)
 	size_t pos = 0;
 	while (1)
 	{
-		size_t movePosition = possibleGameState.find(myDisk, pos);			// pos of my disk
+		size_t movePosition = possibleGameState.find(myDisk, pos);			// position of my disk
 
 		if (movePosition == std::string::npos) 
 			break;

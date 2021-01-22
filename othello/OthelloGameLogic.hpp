@@ -61,6 +61,44 @@ int checkLeft(const std::string& gameBoard, const size_t& diskIndex, const char&
 int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
 
 /**
+* Checks possible move on Othello board by going diagonal up and left.
+* @param gameBoard represents board with O for being white disk and X being black disk
+* @param diskIndex represents index on game board to be checked
+* @param opponentDisk represents current disk color
+* @return integer value -1 for not possible move or free index on gameBoard
+*/
+int checkDiagonalUpLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
+
+/**
+* Checks possible move on Othello board by going diagonal up and right.
+* @param gameBoard represents board with O for being white disk and X being black disk
+* @param diskIndex represents index on game board to be checked
+* @param opponentDisk represents current disk color
+* @return integer value -1 for not possible move or free index on gameBoard
+*/
+int checkDiagonalUpRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
+
+
+/**
+* Checks possible move on Othello board by going diagonal down and left.
+* @param gameBoard represents board with O for being white disk and X being black disk
+* @param diskIndex represents index on game board to be checked
+* @param opponentDisk represents current disk color
+* @return integer value -1 for not possible move or free index on gameBoard
+*/
+int checkDiagonalDownLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
+
+
+/**
+* Checks possible move on Othello board by going diagonal down and right.
+* @param gameBoard represents board with O for being white disk and X being black disk
+* @param diskIndex represents index on game board to be checked
+* @param opponentDisk represents current disk color
+* @return integer value -1 for not possible move or free index on gameBoard
+*/
+int checkDiagonalDownRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
+
+/**
 * Checks all directions for possible moves on Othello board.
 * @param gameBoard represents board with O for being white disk and X being black disk
 * @param diskIndex represents index on game board to be checked
