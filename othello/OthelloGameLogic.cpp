@@ -253,6 +253,7 @@ void moveDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const int& co
 	if (!color)	disk = 'X';
 
 	othelloGame.setGameState(gameBoardIndex, disk);
+	othelloGame.incrementScore();
 }
 
 

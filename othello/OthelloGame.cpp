@@ -10,12 +10,11 @@
 #include <iostream>
 #include <vector>
 #include "OthelloGame.hpp"
-// #include "OthelloBot.hpp"
 #include "OthelloGameLogic.hpp"
 
 // Create Othello bot with given color
 OthelloGame::OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
-	: m_color{ !color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }
+	: m_color{ !color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_playerScore{ 2 }
 {
 }
 
@@ -33,23 +32,35 @@ const int& OthelloGame::getColor()
 // Get current state of a game board.
 const std::string& OthelloGame::getGameState()
 {
-	return m_game;
+	return m_board;
 }
 
 // Set state of a game board.
 void OthelloGame::setGameState(const int& gameBoardIndex, const char& disk)
 {
-	this->m_game[gameBoardIndex] = disk;
+	this->m_board[gameBoardIndex] = disk;
+}
+
+// Get current player's score.
+const unsigned short& OthelloGame::getScore()
+{
+	return this->m_playerScore;
+}
+
+// Increment player's score.
+void OthelloGame::incrementScore()
+{
+	++this->m_playerScore;
 }
 
 // Writes current game state to stream.
 std::ostream& operator<<(std::ostream& lhs, const OthelloGame& rhs)
 {
 	lhs << "  a b c d e f g h";
-	for (size_t i = 0, row = 0; i < 64; ++i)
+	for (size_t i = 0, row = 0; i < rhs.m_boardSize; ++i)
 	{
-		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
-		lhs << rhs.m_game[i] << ' ';
+		if (i % rhs.m_boardWidth == 0)	lhs << '\n' << ++row << ' ';
+		lhs << rhs.m_board[i] << ' ';
 	}
 	lhs << '\n';
 	return lhs;
@@ -172,15 +183,16 @@ void readCommand(int argc, char* argv[])
 {
 	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
 	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
-
 	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
+
 	OthelloGame othelloGame{ color, maxDepth, heuristic, moveTime };
+
+	std::cout << "Your score is: " << othelloGame.getScore() << ".\n";
 	std::vector<int> vectorValidMove = getValidMoves(othelloGame, color);
 
 	std::string command;
 	while (std::getline(std::cin, command)) {
 		toUpper(command);
-
 		if (!command.compare("STOP"))
 		{
 			std::cout << "\nGame stopped, you lost!\n";
@@ -199,6 +211,12 @@ void readCommand(int argc, char* argv[])
 			continue;
 		}
 		moveDisk(othelloGame, gameBoardIndex, color);
+		std::cout << "Your score is: " << othelloGame.getScore() << ".\n";
 		vectorValidMove = getValidMoves(othelloGame, color);
+		if (vectorValidMove.empty())
+		{
+			std::cout << "\nGame ended! Your score is: " << othelloGame.getScore() << ".\n";
+			break;
+		}
 	}
 }

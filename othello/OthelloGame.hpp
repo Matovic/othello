@@ -18,7 +18,7 @@ class OthelloGame
 {
 public:
 	/**
-	* Create Othello bot with specific color.
+	* Create OthelloGame object with specific parameters.
 	* @param color integer to specify color of bot's discs.
 	* 1 - white color.
 	* 0 - black color.
@@ -30,7 +30,7 @@ public:
 	OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
 
 	/**
-	* Destroy Othello bot object.
+	* Destroy OthelloGame object.
 	*/
 	~OthelloGame();
 
@@ -42,7 +42,7 @@ public:
 
 	/**
 	* Get current state of a game board.
-	* @return m_game const reference of a string.
+	* @return m_board const reference of a string.
 	*/
 	const std::string& getGameState();
 
@@ -53,9 +53,22 @@ public:
 	*/
 	void setGameState(const int& gameBoardIndex, const char& disk);
 
+	/**
+	* Get current player's score.
+	* @return m_score const reference of an integer.
+	*/
+	const unsigned short& getScore();
+
+	/**
+	* Increment player's score.
+	*/
+	void incrementScore();
+
 private:
 	int m_color, m_maxDepth, m_heuristic, m_moveTime;
-	std::string m_game = "---------------------------OX------XO--------------------------------";
+	const size_t m_boardWidth = 8, m_boardSize = 64;
+	std::string m_board = "---------------------------OX------XO--------------------------------";
+	unsigned short m_playerScore;
 
 	friend std::ostream& operator<<(std::ostream&, const OthelloGame&);
 };
