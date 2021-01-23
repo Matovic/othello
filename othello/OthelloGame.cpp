@@ -10,8 +10,50 @@
 #include <iostream>
 #include <vector>
 #include "OthelloGame.hpp"
-#include "OthelloBot.hpp"
+// #include "OthelloBot.hpp"
 #include "OthelloGameLogic.hpp"
+
+// Create Othello bot with given color
+OthelloGame::OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
+	: m_color{ !color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }
+{
+}
+
+// Destroy Othello bot object.
+OthelloGame::~OthelloGame()
+{
+}
+
+// Get current integer of color specifying color of bot's discs.
+const int& OthelloGame::getColor()
+{
+	return m_color;
+}
+
+// Get current state of a game board.
+const std::string& OthelloGame::getGameState()
+{
+	return m_game;
+}
+
+// Set state of a game board.
+void OthelloGame::setGameState(const int& gameBoardIndex, const char& disk)
+{
+	this->m_game[gameBoardIndex] = disk;
+}
+
+// Writes current game state to stream.
+std::ostream& operator<<(std::ostream& lhs, const OthelloGame& rhs)
+{
+	lhs << "  a b c d e f g h";
+	for (size_t i = 0, row = 0; i < 64; ++i)
+	{
+		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
+		lhs << rhs.m_game[i] << ' ';
+	}
+	lhs << '\n';
+	return lhs;
+}
 
 // Makes all characters uppercase in given string.
 void toUpper(std::string& str)
@@ -132,10 +174,8 @@ void readCommand(int argc, char* argv[])
 	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
 
 	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
-	OthelloBot othelloBot{ color, maxDepth, heuristic, moveTime };
-	//std::cout << othelloBot << '\n';
-
-	std::vector<int> vectorValidMove = getValidMoves(othelloBot, color);
+	OthelloGame othelloGame{ color, maxDepth, heuristic, moveTime };
+	std::vector<int> vectorValidMove = getValidMoves(othelloGame, color);
 
 	std::string command;
 	while (std::getline(std::cin, command)) {
@@ -158,8 +198,7 @@ void readCommand(int argc, char* argv[])
 			std::cout << "Not possible move!\n";
 			continue;
 		}
-		moveDisk(othelloBot, gameBoardIndex, color);
-
-		vectorValidMove = getValidMoves(othelloBot, color);
+		moveDisk(othelloGame, gameBoardIndex, color);
+		vectorValidMove = getValidMoves(othelloGame, color);
 	}
 }

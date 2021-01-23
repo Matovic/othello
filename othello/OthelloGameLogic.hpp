@@ -10,7 +10,7 @@
 #pragma once
 
 #include <string>
-#include "OthelloBot.hpp"
+#include "OthelloGame.hpp"
 
 /**
 * Constant represents columns in visualization
@@ -109,20 +109,20 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 
 /**
 * Gets all possible moves on Othello board.
-* @param othelloBot object of class OthelloBot
+* @param othelloGame object of class OthelloGame
 * @param color integer to specify color of a disk
 * @return vector of valid indexes representing valid moves on Othello board
 */
-std::vector<int> getValidMoves(OthelloBot& othelloBot, const int& color);
+std::vector<int> getValidMoves(OthelloGame& othelloGame, const int& color);
 
 /**
 * Moves disk on Othello board based on given command.
-* @param othelloBot object of class OthelloBot
+* @param othelloGame object of class OthelloGame
 * @param gameBoardIndex to move disk
 * @param color integer to specify color of a disk
 * @return
 */
-void moveDisk(OthelloBot& othelloBot, const int& gameBoardIndex, const int& color);
+void moveDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const int& color);
 
 /**
 * Writes current game state to output stream on a console.
