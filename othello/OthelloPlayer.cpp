@@ -11,7 +11,6 @@
 #include <vector>
 #include "OthelloPlayer.hpp"
 #include "OthelloGameLogic.hpp"
-#include "OthelloBot.hpp"
 
 // Create OthelloPlayer object with specific parameters.
 OthelloPlayer::OthelloPlayer(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
@@ -28,8 +27,9 @@ OthelloPlayer::~OthelloPlayer()
 void OthelloPlayer::readCommand()
 {
 	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime};
-	std::cout << "Your score is: " << this->m_score << ".\n";
-	std::cout << "Bot's score is: " << bot.getScore() << ".\n";
+
+	printScore(*this, bot);
+
 	std::vector<int> vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk());
 
 	std::string command;
@@ -53,16 +53,28 @@ void OthelloPlayer::readCommand()
 			std::cout << "Not possible move!\n";
 			continue;
 		}
-		placeDisk(*this, gameBoardIndex, this->m_disk);
 
-		std::cout << "Your score is: " << this->m_score << ".\n";
-		std::cout << "Bot's score is: " << bot.getScore() << ".\n";
+		// new game state  with new placed disk
+		placeDisk(*this, gameBoardIndex, this->m_disk);
+		bot.setGameState(gameBoardIndex, this->m_disk);
+
+		printScore(*this, bot);
 
 		vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk());
+
+		// if there are not valid moves, game is over
 		if (vectorValidMove.empty())
 		{
 			std::cout << "\nGame ended! Your score is: " << this->m_score << ".\n";
 			break;
 		}
 	}
+}
+
+// Prints game's score
+void printScore(OthelloPlayer& player, OthelloBot& bot)
+{
+	std::cout << "Your score is: " << player.getScore() << ".\n";
+	std::cout << "Bot's score is: " << bot.getScore() << ".\n";
+	// std::cout << bot << '\n';
 }

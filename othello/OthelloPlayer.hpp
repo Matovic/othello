@@ -10,6 +10,7 @@
 #pragma once
 
 #include "OthelloGame.hpp"
+#include "OthelloBot.hpp"
 
 /**
 * Class OthelloPlayer representing player
@@ -36,11 +37,15 @@ public:
 
 	/**
 	* Reads user's commands
-	* @param argument count
-	* @param argument vector
-	* @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
 	*/
 	void readCommand();
 
 private:
 };
+
+/**
+* Prints game's score
+* @param player for printing player's score
+* @param bot for printing bot's score
+*/
+void printScore(OthelloPlayer& player, OthelloBot& bot);
