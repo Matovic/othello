@@ -92,11 +92,13 @@
     <ClCompile Include="OthelloBot.cpp" />
     <ClCompile Include="OthelloGame.cpp" />
     <ClCompile Include="OthelloGameLogic.cpp" />
+    <ClCompile Include="OthelloPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OthelloBot.hpp" />
     <ClInclude Include="OthelloGame.hpp" />
     <ClInclude Include="OthelloGameLogic.hpp" />
+    <ClInclude Include="OthelloPlayer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

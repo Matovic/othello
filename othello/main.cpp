@@ -8,7 +8,7 @@
 */
 
 #include <iostream>
-#include "OthelloGame.hpp"
+#include "OthelloPlayer.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -17,6 +17,12 @@ int main(int argc, char* argv[])
 		std::cerr << "ERROR 00: Wrong parameters!\n";
 		return 1;
 	}
-	readCommand(argc, argv);
+
+	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
+	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
+	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
+	OthelloPlayer player{ color, maxDepth, heuristic, moveTime };
+	player.readCommand();
+
 	return 0;
 }

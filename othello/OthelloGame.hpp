@@ -12,14 +12,14 @@
 #include <string>
 
 /**
-* Class OthelloGame representing player's opponent
+* Class OthelloGame representing Othello game
 */
 class OthelloGame
 {
 public:
 	/**
 	* Create OthelloGame object with specific parameters.
-	* @param color integer to specify color of bot's discs.
+	* @param color integer to specify color of player's disk.
 	* 1 - white color.
 	* 0 - black color.
 	* -1 - not valid command, exit program.
@@ -30,15 +30,24 @@ public:
 	OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
 
 	/**
+	* Create OthelloGame object with specific parameters.
+	* @param playerDisk char to specify color of bot's disk.
+	* @param maxDepth integer to specify depth of minmax.
+	* @param heuristic integer to specify heuristic function.
+	* @param moveTime integer to specify time of player's move.
+	*/
+	OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime);
+
+	/**
 	* Destroy OthelloGame object.
 	*/
 	~OthelloGame();
 
 	/**
-	* Get current integer of color specifying color of bot's discs.
+	* Get current char of disk specifying color of bot's discs.
 	* @return m_color const reference of an integer.
 	*/
-	const int& getColor();
+	const char& getDisk();
 
 	/**
 	* Get current state of a game board.
@@ -64,11 +73,13 @@ public:
 	*/
 	void incrementScore();
 
-private:
-	int m_color, m_maxDepth, m_heuristic, m_moveTime;
+protected:
+	char m_disk;
+	int m_maxDepth, m_heuristic, m_moveTime;
+
 	const size_t m_boardWidth = 8, m_boardSize = 64;
 	std::string m_board = "---------------------------OX------XO--------------------------------";
-	unsigned short m_playerScore;
+	unsigned short m_score;
 
 	friend std::ostream& operator<<(std::ostream&, const OthelloGame&);
 };
@@ -121,16 +132,22 @@ std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[]);
 int checkParameters(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
 
 /**
-* Reads user's commands
-* @param argument count
-* @param argument vector
-* @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
-*/
-void readCommand(int argc, char* argv[]);
-
-/**
-* Gets index from valid user's command
+* Gets index from valid user's command.
 * @param command is valid user's command 
 * @return index to be used on Othello game board
 */
 int getIndexFromCommand(const std::string& command);
+
+/**
+* Gets disk on an Othello game board from given color.
+* @param color to specify disk on an Othello game board
+* @return char representing disk color
+*/
+char findDisk(const int& color);
+
+/**
+* Gets disk on an Othello game board from given player'ð disk.
+* @param playerDisk to specify disk for bot on an Othello game board
+* @return char representing disk color
+*/
+char findDiskFromPlayer(const char& playerDisk);

@@ -14,7 +14,13 @@
 
 // Create Othello bot with given color
 OthelloGame::OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
-	: m_color{ !color }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_playerScore{ 2 }
+	: m_disk{ findDisk(color) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ 2 }
+{
+}
+
+// Create OthelloGame object with specific parameters.
+OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime)
+	: m_disk{ findDiskFromPlayer(playerDisk) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ 2 }
 {
 }
 
@@ -23,16 +29,16 @@ OthelloGame::~OthelloGame()
 {
 }
 
-// Get current integer of color specifying color of bot's discs.
-const int& OthelloGame::getColor()
+// Get current char of disk specifying color of bot's discs.
+const char& OthelloGame::getDisk()
 {
-	return m_color;
+	return this->m_disk;
 }
 
 // Get current state of a game board.
 const std::string& OthelloGame::getGameState()
 {
-	return m_board;
+	return this->m_board;
 }
 
 // Set state of a game board.
@@ -44,13 +50,13 @@ void OthelloGame::setGameState(const int& gameBoardIndex, const char& disk)
 // Get current player's score.
 const unsigned short& OthelloGame::getScore()
 {
-	return this->m_playerScore;
+	return this->m_score;
 }
 
 // Increment player's score.
 void OthelloGame::incrementScore()
 {
-	++this->m_playerScore;
+	++this->m_score;
 }
 
 // Writes current game state to stream.
@@ -171,52 +177,25 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 	return 0;
 }
 
-// Gets index from valid user's command
+// Gets index from valid user's command.
 int getIndexFromCommand(const std::string& command)
 {
 	int columnIndex = command[0] - 'A', rowIndex = command[1] - '1';
 	return rowIndex * 8 + columnIndex;
 }
 
-// Reads user's commands
-void readCommand(int argc, char* argv[])
+// Gets disk on an Othello game board from given color.
+char findDisk(const int& color)
 {
-	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
-	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
-	std::tie(color, maxDepth, heuristic, moveTime) = getParameters(argc, argv);
+	char disk = 'X';
+	if (color) disk = 'O';
+	return disk;
+}
 
-	OthelloGame othelloGame{ color, maxDepth, heuristic, moveTime };
-
-	std::cout << "Your score is: " << othelloGame.getScore() << ".\n";
-	std::vector<int> vectorValidMove = getValidMoves(othelloGame, color);
-
-	std::string command;
-	while (std::getline(std::cin, command)) {
-		toUpper(command);
-		if (!command.compare("STOP"))
-		{
-			std::cout << "\nGame stopped, you lost!\n";
-			break;
-		}
-
-		if (command.size() != 2 || COLUMN.find(command[0]) == std::string::npos || ROW.find(command[1]) == std::string::npos)
-		{
-			std::cout << "Not valid command!\n";
-			continue;
-		}
-		int gameBoardIndex = getIndexFromCommand(command);
-		if (!isIntInVector(vectorValidMove, gameBoardIndex))
-		{
-			std::cout << "Not possible move!\n";
-			continue;
-		}
-		moveDisk(othelloGame, gameBoardIndex, color);
-		std::cout << "Your score is: " << othelloGame.getScore() << ".\n";
-		vectorValidMove = getValidMoves(othelloGame, color);
-		if (vectorValidMove.empty())
-		{
-			std::cout << "\nGame ended! Your score is: " << othelloGame.getScore() << ".\n";
-			break;
-		}
-	}
+// Gets disk on an Othello game board from given player'ð disk.
+char findDiskFromPlayer(const char& playerDisk)
+{
+	char disk = 'X';
+	if (playerDisk == 'X') disk = 'O';
+	return disk;
 }

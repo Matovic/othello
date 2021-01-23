@@ -208,22 +208,15 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 }
 
 // Gets all possible moves on Othello board.
-std::vector<int> getValidMoves(OthelloGame& othelloGame, const int& color)
+std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk)
 {
-	std::string possibleGameState = othelloGame.getGameState();
+	std::string possibleGameState = board;
 	std::vector<int> vectorValidMoves;										// possible indexes of game state
-	char opponentDisk = 'X', myDisk = 'O';
-
-	if (!color)
-	{
-		opponentDisk = 'O';
-		myDisk = 'X';
-	}
 
 	size_t pos = 0;
 	while (1)
 	{
-		size_t movePosition = possibleGameState.find(myDisk, pos);			// position of my disk
+		size_t movePosition = possibleGameState.find(disk, pos);			// position of my disk
 
 		if (movePosition == std::string::npos) 
 			break;
@@ -246,12 +239,9 @@ void showPossibleMoves(std::string& possibleGameState, const std::vector<int>& v
 	printGameState(possibleGameState);
 }
 
-// Moves disk on Othello board based on given command.
-void moveDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const int& color)
+// Places disk on Othello board based on given command.
+void placeDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const char& disk)
 {
-	char disk = 'O';
-	if (!color)	disk = 'X';
-
 	othelloGame.setGameState(gameBoardIndex, disk);
 	othelloGame.incrementScore();
 }

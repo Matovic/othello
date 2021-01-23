@@ -110,19 +110,19 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 /**
 * Gets all possible moves on Othello board.
 * @param othelloGame object of class OthelloGame
-* @param color integer to specify color of a disk
+* @param disk char to specify color of a disk
 * @return vector of valid indexes representing valid moves on Othello board
 */
-std::vector<int> getValidMoves(OthelloGame& othelloGame, const int& color);
+std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk);
 
 /**
-* Moves disk on Othello board based on given command.
+* Places disk on Othello board based on given command.
 * @param othelloGame object of class OthelloGame
 * @param gameBoardIndex to move disk
-* @param color integer to specify color of a disk
+* @param disk char to specify color of a disk
 * @return
 */
-void moveDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const int& color);
+void placeDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const char& disk);
 
 /**
 * Writes current game state to output stream on a console.
