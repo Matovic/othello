@@ -138,7 +138,6 @@ int checkDiagonalDownRight(const std::string& gameBoard, const size_t& diskIndex
 std::vector<int> checkDirections(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk)
 {
 	std::vector<int> vectorValidMoves;
-	gameBoard, diskIndex, opponentDisk;
 	int tmp = -1;
 
 	// check up
