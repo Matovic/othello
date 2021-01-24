@@ -208,7 +208,7 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 }
 
 // Gets all possible moves on Othello board.
-std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk)
+std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk, const bool& isBot)
 {
 	std::string possibleGameState = board;
 	std::vector<int> vectorValidMoves;										// possible indexes of game state
@@ -226,7 +226,7 @@ std::vector<int> getValidMoves(const std::string& board, const char& disk, const
 		
 		pos = movePosition + 1;
 	}
-	showPossibleMoves(possibleGameState, vectorValidMoves);
+	if (!isBot) showPossibleMoves(possibleGameState, vectorValidMoves);
 	return vectorValidMoves;
 }
 

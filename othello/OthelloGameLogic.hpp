@@ -113,7 +113,7 @@ std::vector<int> checkDirections(const std::string& gameBoard, const size_t& dis
 * @param disk char to specify color of a disk
 * @return vector of valid indexes representing valid moves on Othello board
 */
-std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk);
+std::vector<int> getValidMoves(const std::string& board, const char& disk, const char& opponentDisk, const bool& isBot);
 
 /**
 * Places disk on Othello board based on given command.

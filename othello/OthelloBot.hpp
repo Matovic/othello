@@ -6,18 +6,29 @@
 * @author Erik Matovic
 * @version 31/01/2021
 */
-/**
-* Course: Application programming in C++ 2020/2021
-* Purpose: Bot for the game Othello, with console visualization.
-*
-* @file OthelloBot.hpp
-* @author Erik Matovic
-* @version 31/01/2021
-*/
 
 #pragma once
 
 #include "OthelloGame.hpp"
+#include <string>
+#include <deque>
+
+class GameNode
+{
+public:
+	GameNode(const std::string& gameState, const int& depth);
+	~GameNode();
+
+	const int& getDepth();
+	const std::string& getGameState(); 
+
+private:
+	std::string m_gameState;
+	int m_depth;
+
+
+	friend std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs);
+};
 
 /**
 * Class OthelloBot representing player's opponent
@@ -40,5 +51,10 @@ public:
 	~OthelloBot();
 
 private:
+	GameNode m_currentGameNode;
+	std::deque<GameNode> m_d;
+
+	std::deque<GameNode> createTree();
+	GameNode createGameNode(GameNode& node, const int& validIndexMove, const char& disk);
 };
 

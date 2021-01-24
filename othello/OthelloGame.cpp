@@ -201,7 +201,7 @@ char findDisk(const int& color)
 	return disk;
 }
 
-// Gets disk on an Othello game board from given player'ð disk.
+// Gets disk on an Othello game board from given player's disk.
 char findDiskFromPlayer(const char& playerDisk)
 {
 	char disk = 'X';

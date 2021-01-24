@@ -30,7 +30,7 @@ void OthelloPlayer::readCommand()
 
 	printScore(*this, bot);
 
-	std::vector<int> vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk());
+	std::vector<int> vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk(), false);
 
 	std::string command;
 	while (std::getline(std::cin, command)) {
@@ -60,7 +60,7 @@ void OthelloPlayer::readCommand()
 
 		printScore(*this, bot);
 
-		vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk());
+		vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk(), false);
 
 		// if there are not valid moves, game is over
 		if (vectorValidMove.empty())
