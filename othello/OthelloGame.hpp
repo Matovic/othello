@@ -122,7 +122,7 @@ std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[]);
 std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[]);
 
 /**
-* Checks if given command line arguments are fit to be parameters for Othello game.
+* Checks if given command line arguments are fit to be parameters for an Othello game.
 * @param color 
 * @param maxDepth
 * @param heuristic function
@@ -130,6 +130,13 @@ std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[]);
 * @return 0 if arguments are fine or 1 if arguments are not fit for Othello game
 */
 int checkParameters(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
+
+/**
+* Checks if given command line argument is correct number for an Othello game.
+* @param consoleSwitch
+* @return std::stoi(consoleSwitch) if consoleSwitch is fine or -2 if consoleSwitch is not fit for Othello game
+*/
+int checkNumberOnConsoleSwitch(const std::string consoleSwitch);
 
 /**
 * Gets index from valid user's command.

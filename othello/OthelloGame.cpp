@@ -87,6 +87,14 @@ bool isStringInt(const std::string& str)
 	return !str.empty();
 }
 
+// Checks if given command line argument is correct number for an Othello game.
+int checkNumberOnConsoleSwitch(const std::string consoleSwitch)
+{
+	if (!isStringInt(consoleSwitch))
+		return -2;
+	return std::stoi(consoleSwitch);
+}
+
 // Get parameters from command line arguments.
 std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[])
 {
@@ -107,37 +115,38 @@ std::tuple<int, int, int, int> getParameters(const int& argc, char* argv[])
 // Processes command line arguments into a tuple of color, max depth, heuristic function and time.
 std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[])
 {
-	// color = -1, maxDepth = -1, heuristic = -1, moveTime = -1 are all not valid
 	int color = -1, maxDepth = -1, heuristic = -1, moveTime = -1;
 	std::vector<std::string> args(argv + 1, argc + argv);
 
-	for (std::string str : args)
+	for (std::string consoleSwitch : args)
 	{
-		toUpper(str);
+		toUpper(consoleSwitch);
 
-		if (str.compare("--WHITE") == 0)
+		// check given numbers
+		if (maxDepth == 0)
+			maxDepth = checkNumberOnConsoleSwitch(consoleSwitch);
+
+		else if (heuristic == 0)
+			heuristic = checkNumberOnConsoleSwitch(consoleSwitch);
+
+		else if (moveTime == 0)
+			moveTime = checkNumberOnConsoleSwitch(consoleSwitch);
+
+		// check given commands
+		else if (consoleSwitch.compare("--WHITE") == 0 && color == -1)
 			color = 1;
 
-		else if (str.compare("--BLACK") == 0)
+		else if (consoleSwitch.compare("--BLACK") == 0 && color == -1)
 			color = 0;
 
-		else if (str.compare("--TIME") == 0)
+		else if (consoleSwitch.compare("--TIME") == 0 && moveTime == -1)
 			moveTime = 0;
 
-		else if (str.compare("--FUNC") == 0)
+		else if (consoleSwitch.compare("--FUNC") == 0 && heuristic == -1)
 			heuristic = 0;
 
-		else if (str.compare("--DEPTH") == 0)
+		else if (consoleSwitch.compare("--DEPTH") == 0 && maxDepth == -1)
 			maxDepth = 0;
-
-		else if (maxDepth == 0 && isStringInt(str))
-			maxDepth = std::stoi(str);
-
-		else if (heuristic == 0 && isStringInt(str))
-			heuristic = std::stoi(str);
-
-		else if (moveTime == 0 && isStringInt(str))
-			moveTime = std::stoi(str);
 
 		else
 		{
@@ -148,7 +157,7 @@ std::tuple<int, int, int, int> processArguments(const int& argc, char* argv[])
 	return std::make_tuple(color, maxDepth, heuristic, moveTime);
 }
 
-// Checks if given command line arguments are fit to be parameters for Othello game.
+// Checks if given command line arguments are fit to be parameters for an Othello game.
 int checkParameters(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
 {
 	if (color < 0)
@@ -163,7 +172,7 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 		return 1;
 	}
 
-	if (heuristic < 1 || heuristic > 3)
+	if (heuristic < 1 || heuristic > 2)
 	{
 		std::cerr << "ERROR 03: Heuristic function is not known!\n";
 		return 1;
