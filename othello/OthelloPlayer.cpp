@@ -55,8 +55,8 @@ void OthelloPlayer::readCommand()
 		}
 
 		// new game state  with new placed disk
-		placeDisk(*this, gameBoardIndex, this->m_disk);
-		bot.setGameState(gameBoardIndex, this->m_disk);
+		placeDisk(*this, bot, gameBoardIndex, this->m_disk);
+		bot.setGameState(this->getGameState());
 
 		printScore(*this, bot);
 

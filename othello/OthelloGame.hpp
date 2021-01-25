@@ -56,11 +56,17 @@ public:
 	const std::string& getGameState();
 
 	/**
-	* Set state of a game board.
+	* Set state of a game board with one character.
 	* @param gameBoardIndex index to be changed.
 	* @param disk to written on game board.
 	*/
 	void setGameState(const int& gameBoardIndex, const char& disk);
+
+	/**
+	* Set state of a game board with new string.
+	* @param gameBoard new game board state string.
+	*/
+	void setGameState(const std::string& gameBoard);
 
 	/**
 	* Get current player's score.
@@ -72,6 +78,11 @@ public:
 	* Increment player's score.
 	*/
 	void incrementScore();
+
+	/**
+	* Decrement player's score.
+	*/
+	void decrementScore();
 
 protected:
 	char m_disk;

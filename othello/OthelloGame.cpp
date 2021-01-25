@@ -47,6 +47,12 @@ void OthelloGame::setGameState(const int& gameBoardIndex, const char& disk)
 	this->m_board[gameBoardIndex] = disk;
 }
 
+// Set state of a game board with new string.
+void OthelloGame::setGameState(const std::string& gameBoard)
+{
+	this->m_board = gameBoard;
+}
+
 // Get current player's score.
 const unsigned short& OthelloGame::getScore()
 {
@@ -57,6 +63,12 @@ const unsigned short& OthelloGame::getScore()
 void OthelloGame::incrementScore()
 {
 	++this->m_score;
+}
+
+// Decrement player's score.
+void OthelloGame::decrementScore()
+{
+	--this->m_score;
 }
 
 // Writes current game state to stream.

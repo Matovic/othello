@@ -13,6 +13,22 @@
 #include "OthelloGame.hpp"
 
 /**
+* Struct GameDirection representing all posible direction for one disk.
+*/
+struct GameDirection
+{
+	static const int
+		UP = -8,
+		DOWN = 8,
+		LEFT = -1,
+		RIGHT = 1,
+		DIAGONAL_UP_LEFT = -9,
+		DIAGONAL_UP_RIGHT = -7,
+		DIAGONAL_DOWN_LEFT = 7,
+		DIAGONAL_DOWN_RIGHT = 9;
+};
+
+/**
 * Constant represents columns in visualization
 */
 static const std::string COLUMN = "ABCDEFGH";
@@ -23,7 +39,7 @@ static const std::string COLUMN = "ABCDEFGH";
 static const std::string ROW = "12345678";
 
 /**
-* Checks possible move on Othello board by going up.
+* Checks possible move on Othello board by going UP.
 * @param gameBoard represents board with O for being white disk and X being black disk
 * @param diskIndex represents index on game board to be checked
 * @param opponentDisk represents current disk color 
@@ -61,7 +77,7 @@ int checkLeft(const std::string& gameBoard, const size_t& diskIndex, const char&
 int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
 
 /**
-* Checks possible move on Othello board by going diagonal up and left.
+* Checks possible move on Othello board by going diagonal UP and left.
 * @param gameBoard represents board with O for being white disk and X being black disk
 * @param diskIndex represents index on game board to be checked
 * @param opponentDisk represents current disk color
@@ -70,7 +86,7 @@ int checkRight(const std::string& gameBoard, const size_t& diskIndex, const char
 int checkDiagonalUpLeft(const std::string& gameBoard, const size_t& diskIndex, const char& opponentDisk);
 
 /**
-* Checks possible move on Othello board by going diagonal up and right.
+* Checks possible move on Othello board by going diagonal UP and right.
 * @param gameBoard represents board with O for being white disk and X being black disk
 * @param diskIndex represents index on game board to be checked
 * @param opponentDisk represents current disk color
@@ -118,11 +134,12 @@ std::vector<int> getValidMoves(const std::string& board, const char& disk, const
 /**
 * Places disk on Othello board based on given command.
 * @param othelloGame object of class OthelloGame
+* @param OthelloGame& opponent
 * @param gameBoardIndex to move disk
 * @param disk char to specify color of a disk
 * @return
 */
-void placeDisk(OthelloGame& othelloGame, const int& gameBoardIndex, const char& disk);
+void placeDisk(OthelloGame& othelloGame, OthelloGame& opponent, const int& gameBoardIndex, const char& disk);
 
 /**
 * Writes current game state to output stream on a console.
@@ -144,3 +161,92 @@ int isIntInVector(const std::vector<int>& v, const int& iValue);
 * @param vectorValidMoves with possible user's moves
 */
 void showPossibleMoves(std::string& possibleGameState, const std::vector<int>& vectorValidMoves);
+
+/**
+* Flips all disks based on game's rules.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+*/
+void flipAllDisks(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks diagonal down right.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipDiagonalDownRight(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks diagonal down left.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipDiagonalDownLeft(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks diagonal up right.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipDiagonalUpRight(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks diagonal up left.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipDiagonalUpLeft(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks right.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipRight(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks left.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipLeft(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks up.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipUp(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Checks down.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @return index of game state to be changed or -1 if there is no one
+*/
+int checkFlipDown(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex);
+
+/**
+* Flips all disks on given direction.
+* @param player class
+* @param opponent class
+* @param gameBoardIndex to be examined
+* @param direction is integer number for specifing direction
+*/
+void flipDiskOnGivenDirection(OthelloGame& player, OthelloGame& opponent, int& diskIndexToChange, const int direction);
