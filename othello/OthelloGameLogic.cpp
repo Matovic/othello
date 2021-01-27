@@ -271,6 +271,9 @@ int checkFlipDown(OthelloGame& player, OthelloGame& opponent, const int& gameBoa
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::DOWN;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -292,6 +295,9 @@ int checkFlipUp(OthelloGame& player, OthelloGame& opponent, const int& gameBoard
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::UP;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -313,6 +319,9 @@ int checkFlipLeft(OthelloGame& player, OthelloGame& opponent, const int& gameBoa
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::LEFT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -334,6 +343,9 @@ int checkFlipRight(OthelloGame& player, OthelloGame& opponent, const int& gameBo
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::RIGHT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -355,6 +367,9 @@ int checkFlipDiagonalUpLeft(OthelloGame& player, OthelloGame& opponent, const in
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::DIAGONAL_UP_LEFT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -376,6 +391,9 @@ int checkFlipDiagonalUpRight(OthelloGame& player, OthelloGame& opponent, const i
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::DIAGONAL_UP_RIGHT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -397,6 +415,9 @@ int checkFlipDiagonalDownLeft(OthelloGame& player, OthelloGame& opponent, const 
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::DIAGONAL_DOWN_LEFT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -418,6 +439,9 @@ int checkFlipDiagonalDownRight(OthelloGame& player, OthelloGame& opponent, const
 
 		else if (diskIndexToChange == -2 && gameBoard[diskIndex] == disk)
 			return diskIndex - GameDirection::DIAGONAL_DOWN_RIGHT;
+
+		else if (diskIndexToChange == -1)
+			return -1;
 	}
 	return -1;
 }
@@ -429,64 +453,65 @@ void flipAllDisks(OthelloGame& player, OthelloGame& opponent, const int& gameBoa
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::UP);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipUp(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::DOWN);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipLeft(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::RIGHT);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipRight(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::LEFT);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipDiagonalUpLeft(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::DIAGONAL_DOWN_RIGHT);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipDiagonalUpRight(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::DIAGONAL_DOWN_LEFT);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipDiagonalDownLeft(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::DIAGONAL_UP_RIGHT);
-		return;
+		//return;
 	}
 
 	diskIndexToChange = checkFlipDiagonalDownRight(player, opponent, gameBoardIndex);
 	if (diskIndexToChange > 0)
 	{
 		flipDiskOnGivenDirection(player, opponent, diskIndexToChange, GameDirection::DIAGONAL_UP_LEFT);
-		return;
+		//return;
 	}
 }
 
 // Places disk on Othello board based on given command.
-void placeDisk(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex, const char& disk)
+void placeDisk(OthelloGame& player, OthelloGame& opponent, const int& gameBoardIndex)
 {
-	player.setGameState(gameBoardIndex, disk);
+	player.setGameState(gameBoardIndex, player.getDisk());
 	flipAllDisks(player, opponent, gameBoardIndex);
+	opponent.setGameState(player.getGameState());
 	player.incrementScore();
 }
 

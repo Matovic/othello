@@ -38,6 +38,13 @@ public:
 	*/
 	OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime);
 
+	OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
+		const std::string& gameState, const unsigned short& score);
+
+	OthelloGame(const OthelloGame& node);
+
+	OthelloGame() = default;
+
 	/**
 	* Destroy OthelloGame object.
 	*/
@@ -84,6 +91,8 @@ public:
 	*/
 	void decrementScore();
 
+	OthelloGame& operator=(OthelloGame& rhs);
+
 protected:
 	char m_disk;
 	int m_maxDepth, m_heuristic, m_moveTime;
@@ -92,7 +101,8 @@ protected:
 	std::string m_board = "---------------------------OX------XO--------------------------------";
 	unsigned short m_score;
 
-	friend std::ostream& operator<<(std::ostream&, const OthelloGame&);
+	friend std::ostream& operator<<(std::ostream&, const OthelloGame&); 
+	friend void printScore(const OthelloGame& player, const OthelloGame& bot);
 };
 
 /**
@@ -169,3 +179,10 @@ char findDisk(const int& color);
 * @return char representing disk color
 */
 char findDiskFromPlayer(const char& playerDisk);
+
+/**
+* Prints game's score
+* @param player for printing player's score
+* @param bot for printing bot's score
+*/
+void printScore(const OthelloGame& player, const OthelloGame& bot);

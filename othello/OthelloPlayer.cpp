@@ -26,7 +26,7 @@ OthelloPlayer::~OthelloPlayer()
 // Reads user's commands
 void OthelloPlayer::readCommand()
 {
-	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime};
+	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime, *this};
 
 	printScore(*this, bot);
 
@@ -55,11 +55,12 @@ void OthelloPlayer::readCommand()
 		}
 
 		// new game state  with new placed disk
-		placeDisk(*this, bot, gameBoardIndex, this->m_disk);
-		bot.setGameState(this->getGameState());
+		placeDisk(*this, bot, gameBoardIndex);
+		bot.updateBot(*this);
+
+		if (bot.getDequeGameNodes().empty()) bot.createTree();
 
 		printScore(*this, bot);
-
 		vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk(), false);
 
 		// if there are not valid moves, game is over
@@ -69,12 +70,4 @@ void OthelloPlayer::readCommand()
 			break;
 		}
 	}
-}
-
-// Prints game's score
-void printScore(OthelloPlayer& player, OthelloBot& bot)
-{
-	std::cout << "Your score is: " << player.getScore() << ".\n";
-	std::cout << "Bot's score is: " << bot.getScore() << ".\n";
-	// std::cout << bot << '\n';
 }

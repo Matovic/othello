@@ -13,19 +13,33 @@
 #include <string>
 #include <deque>
 
-class GameNode
+class GameNode : public OthelloGame
 {
 public:
-	GameNode(const std::string& gameState, const int& depth);
+
+	GameNode(const OthelloGame& node, const OthelloGame& player, const int& depth);
+
+	GameNode(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime, 
+		const std::string& gameState, const int& depth, const unsigned short& score, OthelloGame player);
+
+	GameNode(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
+		const int& depth, const unsigned short& score, OthelloGame player);
+
 	~GameNode();
 
 	const int& getDepth();
-	const std::string& getGameState(); 
+
+	OthelloGame& getPlayer();
+
+	void setPlayer(OthelloGame& player);
+
+	GameNode& operator=(OthelloGame& rhs);
+
+	GameNode& operator=(GameNode& rhs);
 
 private:
-	std::string m_gameState;
+	OthelloGame m_player;
 	int m_depth;
-
 
 	friend std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs);
 };
@@ -43,18 +57,26 @@ public:
 	* @param heuristic integer to specify heuristic function.
 	* @param moveTime integer to specify time of player's move.
 	*/
-	OthelloBot(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime);
+	OthelloBot(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime, const OthelloGame& player);
 
 	/**
 	* Destroy OthelloBot object.
 	*/
 	~OthelloBot();
 
-private:
-	GameNode m_currentGameNode;
-	std::deque<GameNode> m_d;
+	std::deque<GameNode> getDequeGameNodes();
 
 	std::deque<GameNode> createTree();
-	GameNode createGameNode(GameNode& node, const int& validIndexMove, const char& disk);
+
+	void updateBot(OthelloGame& player);
+
+	OthelloGame& getPlayer();
+
+private:
+	OthelloGame m_player;
+	GameNode m_currentGameNode;
+	std::deque<GameNode> m_dequeGameNodes;
+
+	GameNode createGameNode(GameNode& node, const int& validIndexMove);//, const char& disk);
 };
 

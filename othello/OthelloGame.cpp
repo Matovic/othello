@@ -24,6 +24,19 @@ OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int&
 {
 }
 
+OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
+	const std::string& gameState, const unsigned short& score)
+	: m_disk{ findDiskFromPlayer(playerDisk) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, 
+	m_moveTime{ moveTime }, m_score{ score }, m_board{ gameState }
+{
+}
+
+OthelloGame::OthelloGame(const OthelloGame& node)
+	: m_disk{ node.m_disk }, m_maxDepth{ node.m_maxDepth }, m_heuristic{ node.m_heuristic }, 
+	m_moveTime{ node.m_moveTime }, m_score{ node.m_score }, m_board { node.m_board }
+{
+}
+
 // Destroy Othello bot object.
 OthelloGame::~OthelloGame()
 {
@@ -69,6 +82,14 @@ void OthelloGame::incrementScore()
 void OthelloGame::decrementScore()
 {
 	--this->m_score;
+}
+
+// 
+OthelloGame& OthelloGame::operator=(OthelloGame& rhs)
+{
+	this->m_board = rhs.getGameState();
+	this->m_score = rhs.getScore();
+	return *this;
 }
 
 // Writes current game state to stream.
@@ -219,4 +240,11 @@ char findDiskFromPlayer(const char& playerDisk)
 	char disk = 'X';
 	if (playerDisk == 'X') disk = 'O';
 	return disk;
+}
+
+// Prints game's score
+void printScore(const OthelloGame& player, const OthelloGame& bot)
+{
+	std::cout << "Player's score is: " << player.m_score << ".\n";
+	std::cout << "Bot's score is: " << bot.m_score << ".\n";
 }

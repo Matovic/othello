@@ -136,10 +136,9 @@ std::vector<int> getValidMoves(const std::string& board, const char& disk, const
 * @param othelloGame object of class OthelloGame
 * @param OthelloGame& opponent
 * @param gameBoardIndex to move disk
-* @param disk char to specify color of a disk
 * @return
 */
-void placeDisk(OthelloGame& othelloGame, OthelloGame& opponent, const int& gameBoardIndex, const char& disk);
+void placeDisk(OthelloGame& othelloGame, OthelloGame& opponent, const int& gameBoardIndex);
 
 /**
 * Writes current game state to output stream on a console.

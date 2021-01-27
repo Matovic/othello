@@ -42,10 +42,3 @@ public:
 
 private:
 };
-
-/**
-* Prints game's score
-* @param player for printing player's score
-* @param bot for printing bot's score
-*/
-void printScore(OthelloPlayer& player, OthelloBot& bot);
