@@ -274,31 +274,179 @@ void OthelloBot::rateLeafs()
 	}
 }
 
+// Determines if disk is stable in up left corner.
+int OthelloBot::checkUpLeftCorner(GameNode& node, const char& disk)
+{
+	// check board from up left corner to the right
+	for (size_t boardIndex = 0; boardIndex < this->m_boardWidth; ++boardIndex)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner to the right is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+
+	// check board from up left corner down
+	for (size_t boardIndex = 0; boardIndex < this->m_boardSize; boardIndex += this->m_boardWidth)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner down is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+	return 0;
+}
+
+// Determines if disk is stable in up right corner.
+int OthelloBot::checkUpRightCorner(GameNode& node, const char& disk)
+{
+	// check board from up right corner to the left
+	for (int boardIndex = static_cast<int>(this->m_boardWidth) - 1; boardIndex > -1; --boardIndex)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent right up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner to the right is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+
+	// check board from up right corner down
+	for (size_t boardIndex = this->m_boardWidth - 1; boardIndex < this->m_boardSize; boardIndex += this->m_boardWidth)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner down is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+	return 0;
+}
+
+// Determines if disk is stable in down left corner.
+int OthelloBot::checkDownLeftCorner(GameNode& node, const char& disk)
+{
+	// check board from down left corner to the right
+	for (size_t boardIndex = 56; boardIndex < this->m_boardSize; ++boardIndex)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner to the right is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+
+	// check board from down left corner up
+	for (int boardIndex = 56; boardIndex > -1; boardIndex -= static_cast<int>(this->m_boardWidth))
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner down is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+	return 0;
+}
+
+// Determines if disk is stable in down right corner.
+int OthelloBot::checkDownRightCorner(GameNode& node, const char& disk)
+{
+	// check board from down right corner to the left
+	for (size_t boardIndex = this->m_boardSize - 1; boardIndex > 55; --boardIndex)
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent right up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner to the right is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+
+	// check board from down right corner up
+	for (int boardIndex = static_cast<int>(this->m_boardSize) - 1; boardIndex > 6; boardIndex -= static_cast<int>(this->m_boardWidth))
+	{
+		// disk is already placed
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == disk)
+			continue;
+
+		// parent left up corner was free and now is taken by player
+		if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(boardIndex) == DiskState::EMPTY
+			&& node.getGameState().at(boardIndex) == disk)
+			return 1;
+
+		// from left up corner down is an empty space or opponent disk
+		if (node.getGameState().at(boardIndex) != disk)
+			break;
+	}
+	return 0;
+}
+
 // Determines if disk is stable and therefore in corner.
 int OthelloBot::determineStableDisk(GameNode& node)
 {
 	char disk = node.getDisk();
-	if (node.getDepth() % 2 == 1)
+	if (node.getDepth() % 2 == 0)
 		disk = node.getPlayer().getDisk();
 
-	// parent left up corner was free and now is taken by player
-	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(0) == '-'
-		&& node.getGameState().at(0) == disk)
+	if (this->checkUpLeftCorner(node, disk)) 
 		return 1;
 
-	// parent right up corner was free and now is taken by player
-	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(7) == '-'
-		&& node.getGameState().at(7) == disk)
+	if (this->checkUpRightCorner(node, disk))
 		return 1;
 
-	// parent left down corner was free and now is taken by player
-	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(56) == '-'
-		&& node.getGameState().at(56) == disk)
+	if (this->checkDownLeftCorner(node, disk))
 		return 1;
 
-	// parent right down corner was free and now is taken by player
-	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(63) == '-'
-		&& node.getGameState().at(63) == disk)
+	if (this->checkDownRightCorner(node, disk))
 		return 1;
 
 	return 0;
@@ -317,10 +465,10 @@ void OthelloBot::rateParents(const int heuristicConstant)
 			&& deque[node.getParentIndex()].getBeta() > node.getAlpha())
 		{
 			// heuristic is 2 and therefore check out corners and determine stable disk
-			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(node))
+			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(deque[node.getParentIndex()]))
 				this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha() * heuristicConstant);
 
-			// heuristic is 2 and therefore it is material count
+			// heuristic is 1 and therefore it is material count
 			else this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha());
 		}
 
@@ -329,10 +477,10 @@ void OthelloBot::rateParents(const int heuristicConstant)
 			&& deque[node.getParentIndex()].getAlpha() < node.getBeta())
 		{
 			// heuristic is 2 and therefore check out corners and determine stable disk
-			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(node))
+			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(deque[node.getParentIndex()]))
 				this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta() * heuristicConstant);
 
-			// heuristic is 2 and therefore it is material count
+			// heuristic is 1 and therefore it is material count
 			else this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta());
 		}
 	}
@@ -365,7 +513,7 @@ void OthelloBot::rateDeque()
 // Init m_dequeGameNodes.
 std::deque<GameNode> OthelloBot::createTree()
 {
-	if (this->m_disk == 'O' && this->m_score == 2 && this->getPlayer().getScore() == 2) 
+	if (this->m_disk == DiskState::WHITE && this->m_score == 2 && this->getPlayer().getScore() == 2) 
 		return std::deque<GameNode>();
 
 	this->m_currentGameNode = *this;

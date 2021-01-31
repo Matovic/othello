@@ -13,7 +13,19 @@
 #include "OthelloGame.hpp"
 
 /**
-* Struct GameDirection representing all posible direction for one disk.
+* Struct DiskState representing all possible disks for the game.
+*/
+struct DiskState
+{
+	static const char
+		BLACK = 'X',
+		WHITE = 'O',
+		EMPTY = '-',
+		POSSIBLE_PLACEMENT = '*';
+};
+
+/**
+* Struct GameDirection representing all possible direction for one disk.
 */
 struct GameDirection
 {
@@ -29,14 +41,19 @@ struct GameDirection
 };
 
 /**
-* Constant represents columns in visualization
+* Constant represents illegal move or not valid move.
 */
-static const std::string COLUMN = "ABCDEFGH";
+static const int NOT_VALID_MOVE = -1;
 
 /**
-* Constant represents rows in visualization
+* Constant represents columns in visualization via command line(CLI)
 */
-static const std::string ROW = "12345678";
+static const std::string COLUMN_CLI = "ABCDEFGH";
+
+/**
+* Constant represents rows in visualization via command line(CLI)
+*/
+static const std::string ROW_CLI = "12345678";
 
 /**
 * Checks possible move on Othello board by going UP.

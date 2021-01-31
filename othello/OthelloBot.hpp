@@ -286,5 +286,34 @@ private:
 	* @param node to be examine.
 	*/
 	int determineStableDisk(GameNode& node);
+
+	/**
+	* Determines if disk is stable in up left corner.
+	* @param node to be examine.
+	* @param disk to specify color of player's disk.
+	*/
+	int checkUpLeftCorner(GameNode& node, const char& disk);
+
+	/**
+	* Determines if disk is stable in up right corner.
+	* @param node to be examine.
+	* @param disk to specify color of player's disk.
+	*/
+	int checkUpRightCorner(GameNode& node, const char& disk);
+
+	/**
+	* Determines if disk is stable in down left corner.
+	* @param node to be examine.
+	* @param disk to specify color of player's disk.
+	*/
+	int checkDownLeftCorner(GameNode& node, const char& disk);
+
+	/**
+	* Determines if disk is stable in down right corner.
+	* @param node to be examine.
+	* @param disk to specify color of player's disk.
+	*/
+	int checkDownRightCorner(GameNode& node, const char& disk);
+
 };
 

@@ -237,16 +237,16 @@ int getIndexFromCommand(const std::string& command)
 // Gets disk on an Othello game board from given color.
 char findDisk(const int& color)
 {
-	char disk = 'X';
-	if (color) disk = 'O';
+	char disk = DiskState::BLACK;
+	if (color) disk = DiskState::WHITE;
 	return disk;
 }
 
 // Gets disk on an Othello game board from given player's disk.
 char findDiskFromPlayer(const char& playerDisk)
 {
-	char disk = 'X';
-	if (playerDisk == 'X') disk = 'O';
+	char disk = DiskState::BLACK;
+	if (playerDisk == DiskState::BLACK) disk = DiskState::WHITE;
 	return disk;
 }
 

@@ -40,7 +40,7 @@ void OthelloPlayer::readCommand()
 	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime, *this};
 	printScore(*this, bot);
 
-	if (this->getDisk() == 'O')
+	if (this->getDisk() == DiskState::WHITE)
 	{
 		std::cout << *this << '\n';
 		bot.makeMove(*this);
@@ -69,7 +69,7 @@ void OthelloPlayer::readCommand()
 			continue;
 		}
 
-		if (command.size() != 2 || COLUMN.find(command[0]) == std::string::npos || ROW.find(command[1]) == std::string::npos)
+		if (command.size() != 2 || COLUMN_CLI.find(command[0]) == std::string::npos || ROW_CLI.find(command[1]) == std::string::npos)
 		{
 			std::cout << "Not valid command!\n";
 			continue;
