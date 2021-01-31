@@ -1,6 +1,6 @@
 /**
 * Course: Application programming in C++ 2020/2021
-* Purpose: Bot for the game Othello, with console visualization.
+* Purpose: Managing command line arguments, basic Othello game concepts.
 *
 * @file OthelloGame.hpp
 * @author Erik Matovic
@@ -26,8 +26,10 @@ public:
 	* @param maxDepth integer to specify depth of minmax.
 	* @param heuristic integer to specify heuristic function.
 	* @param moveTime integer to specify time of player's move.
+	* @param score to specify current player's score.
 	*/
-	OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime);
+	OthelloGame(const int& color, const int& maxDepth = 15, const int& heuristic = 2, 
+		const int& moveTime = 30, const unsigned short& score = 2);
 
 	/**
 	* Create OthelloGame object with specific parameters.
@@ -35,14 +37,32 @@ public:
 	* @param maxDepth integer to specify depth of minmax.
 	* @param heuristic integer to specify heuristic function.
 	* @param moveTime integer to specify time of player's move.
+	* @param score to specify current player's score.
 	*/
-	OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime);
+	OthelloGame(const char& playerDisk, const int& maxDepth = 15, const int& heuristic = 2, 
+		const int& moveTime = 30, const unsigned short& score = 2);
 
+	/**
+	* Create OthelloGame object with specific parameters.
+	* @param playerDisk char to specify color of bot's disk.
+	* @param maxDepth integer to specify depth of minmax.
+	* @param heuristic integer to specify heuristic function.
+	* @param moveTime integer to specify time of player's move.
+	* @param gameState to specify current Othello game board.
+	* @param score to specify current player's score.
+	*/
 	OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
 		const std::string& gameState, const unsigned short& score);
 
+	/**
+	* Create OthelloGame object by copying another OthelloGame object.
+	* @param node object to be copied.
+	*/
 	OthelloGame(const OthelloGame& node);
 
+	/**
+	* Create OthelloGame object with no parameters.
+	*/
 	OthelloGame() = default;
 
 	/**
@@ -87,10 +107,21 @@ public:
 	void incrementScore();
 
 	/**
+	* Set player's score.
+	* @param score is new player's score
+	*/
+	void setScore(const unsigned short& score);
+
+	/**
 	* Decrement player's score.
 	*/
 	void decrementScore();
 
+	/**
+	* Copy given OthelloGame object into another existing OthelloGame object.
+	* @param rhs object OthelloGame to be copied
+	* @return this object
+	*/
 	OthelloGame& operator=(OthelloGame& rhs);
 
 protected:
@@ -98,7 +129,7 @@ protected:
 	int m_maxDepth, m_heuristic, m_moveTime;
 
 	const size_t m_boardWidth = 8, m_boardSize = 64;
-	std::string m_board = "---------------------------OX------XO--------------------------------";
+	std::string m_board = "---------------------------OX------XO---------------------------";
 	unsigned short m_score;
 
 	friend std::ostream& operator<<(std::ostream&, const OthelloGame&); 

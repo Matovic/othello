@@ -1,6 +1,6 @@
 /**
 * Course: Application programming in C++ 2020/2021
-* Purpose: Bot for the game Othello, with console visualization.
+* Purpose: Managing command line arguments, basic Othello game concepts.
 *
 * @file OthelloGame.cpp
 * @author Erik Matovic
@@ -13,17 +13,18 @@
 #include "OthelloGameLogic.hpp"
 
 // Create Othello bot with given color
-OthelloGame::OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime)
-	: m_disk{ findDisk(color) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ 2 }
+OthelloGame::OthelloGame(const int& color, const int& maxDepth, const int& heuristic, const int& moveTime, const unsigned short& score)
+	: m_disk{ findDisk(color) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ score }
 {
 }
 
 // Create OthelloGame object with specific parameters.
-OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime)
-	: m_disk{ findDiskFromPlayer(playerDisk) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ 2 }
+OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime, const unsigned short& score)
+	: m_disk{ findDiskFromPlayer(playerDisk) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, m_moveTime{ moveTime }, m_score{ score }
 {
 }
 
+// Create OthelloGame object with specific parameters.
 OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
 	const std::string& gameState, const unsigned short& score)
 	: m_disk{ findDiskFromPlayer(playerDisk) }, m_maxDepth{ maxDepth }, m_heuristic{ heuristic }, 
@@ -31,6 +32,7 @@ OthelloGame::OthelloGame(const char& playerDisk, const int& maxDepth, const int&
 {
 }
 
+// Create OthelloGame object by copying another OthelloGame object.
 OthelloGame::OthelloGame(const OthelloGame& node)
 	: m_disk{ node.m_disk }, m_maxDepth{ node.m_maxDepth }, m_heuristic{ node.m_heuristic }, 
 	m_moveTime{ node.m_moveTime }, m_score{ node.m_score }, m_board { node.m_board }
@@ -78,13 +80,19 @@ void OthelloGame::incrementScore()
 	++this->m_score;
 }
 
+// Set player's score.
+void OthelloGame::setScore(const unsigned short& score)
+{
+	this->m_score = score;
+}
+
 // Decrement player's score.
 void OthelloGame::decrementScore()
 {
 	--this->m_score;
 }
 
-// 
+// Copy given OthelloGame object into another existing OthelloGame object.
 OthelloGame& OthelloGame::operator=(OthelloGame& rhs)
 {
 	this->m_board = rhs.getGameState();
@@ -199,7 +207,7 @@ int checkParameters(const int& color, const int& maxDepth, const int& heuristic,
 		return 1;
 	}
 
-	if (maxDepth < 5 || maxDepth > 15)
+	if (maxDepth < 1 || maxDepth > 15)
 	{
 		std::cerr << "ERROR 02: Incorrect depth! Depth can be from 5 to 15.\n";
 		return 1;

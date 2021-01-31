@@ -29,7 +29,12 @@ void OthelloPlayer::readCommand()
 	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime, *this};
 
 	printScore(*this, bot);
-
+	if (this->getDisk() == 'O')
+	{
+		std::cout << *this << '\n';
+		bot.makeMove(*this);
+		printScore(*this, bot);
+	}
 	std::vector<int> vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk(), false);
 
 	std::string command;
@@ -38,8 +43,15 @@ void OthelloPlayer::readCommand()
 
 		if (!command.compare("STOP"))
 		{
-			std::cout << "\nGame stopped, you lost!\n";
+			std::cout << "\nYou ended the game!\n";
+			printScore(*this, bot);
 			break;
+		}
+
+		if (!command.compare("PRINT"))
+		{
+			std::cout << "\nThe best path for you is:\n";
+			continue;
 		}
 
 		if (command.size() != 2 || COLUMN.find(command[0]) == std::string::npos || ROW.find(command[1]) == std::string::npos)
@@ -56,17 +68,19 @@ void OthelloPlayer::readCommand()
 
 		// new game state  with new placed disk
 		placeDisk(*this, bot, gameBoardIndex);
-		bot.updateBot(*this);
-
-		if (bot.getDequeGameNodes().empty()) bot.createTree();
-
 		printScore(*this, bot);
+		std::cout << *this << '\n';
+
+		bot.makeMove(*this);
+		printScore(*this, bot);
+
 		vectorValidMove = getValidMoves(this->m_board, this->m_disk, bot.getDisk(), false);
 
 		// if there are not valid moves, game is over
 		if (vectorValidMove.empty())
 		{
-			std::cout << "\nGame ended! Your score is: " << this->m_score << ".\n";
+			std::cout << "\nGame over!\n"; 
+			printScore(*this, bot);
 			break;
 		}
 	}

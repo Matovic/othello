@@ -9,55 +9,119 @@
 
 #include <iostream>
 #include <vector>
-
+#include <limits>
 #include "OthelloBot.hpp"
 #include "OthelloGameLogic.hpp"
 
-// 
-GameNode::GameNode(const OthelloGame& node, const OthelloGame& player, const int& depth)
-	: OthelloGame(node), m_depth{ depth }, m_player {player}
+// Create GameNode object with no parameters.
+GameNode::GameNode() 
+	: OthelloGame(0), m_depth{ -1 }, m_alpha{ std::numeric_limits<int>::min() }, m_beta{ std::numeric_limits<int>::max() }, 
+	m_parentIndex { 0 }, m_leaf {false}
 {
 }
 
-// 
+// Create GameNode object by copying another GameNode object.
+GameNode::GameNode(const GameNode& node) 
+	: OthelloGame(node), m_depth{ node.m_depth }, m_player{ node.m_player },m_alpha{ std::numeric_limits<int>::min() }, 
+	m_beta{ std::numeric_limits<int>::max() }, m_parentIndex{ node.m_parentIndex }, m_leaf{ false }
+{
+}
+
+// Create GameNode object by copying player's and bot's objects and specifying depth in graph.
+GameNode::GameNode(const OthelloGame& opponent, const OthelloGame& player, const int& depth)
+	: OthelloGame(opponent), m_depth{ depth }, m_player {player}, m_alpha{ std::numeric_limits<int>::min() }, 
+	m_beta{ std::numeric_limits<int>::max() }, m_parentIndex{ 0 }, m_leaf{ false }
+{
+}
+
+// Create GameNode object with specific parameters with given current gameState.
 GameNode::GameNode(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
 	const std::string& gameState, const int& depth, const unsigned short& score, OthelloGame player)
-	: OthelloGame(playerDisk, maxDepth, heuristic, moveTime, gameState, score), m_depth{ depth }, m_player{ player }
+	: OthelloGame(playerDisk, maxDepth, heuristic, moveTime, gameState, score), m_depth{ depth }, m_player{ player },
+	m_alpha{ std::numeric_limits<int>::min() }, m_beta{ std::numeric_limits<int>::max() }, m_parentIndex{ 0 }, m_leaf{ false }
 {
 }
 
-// 
+// Create GameNode object with specific parameters without given current gameState.
 GameNode::GameNode(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime,
 	const int& depth, const unsigned short& score, OthelloGame player)
-	: OthelloGame(playerDisk, maxDepth, heuristic, moveTime), m_depth{ depth }, m_player{ player }
+	: OthelloGame(playerDisk, maxDepth, heuristic, moveTime, score), m_depth{ depth }, m_player{ player }, 
+	m_alpha{ std::numeric_limits<int>::min() }, m_beta{ std::numeric_limits<int>::max() }, m_parentIndex{ 0 }, m_leaf{ false }
 {
-	this->m_score = score;
 }
 
-// 
+// Destroy GameNode object.
 GameNode::~GameNode()
 {
 }
 
-// 
+// Getter for current node's depth.
 const int& GameNode::getDepth()
 {
 	return this->m_depth;
 }
 
-//
+// Getter for current node's version of player.
 OthelloGame& GameNode::getPlayer()
 {
 	return this->m_player;
 }
 
-// 
+// Setter for current node's version of player.
 void GameNode::setPlayer(OthelloGame& player)
 {
 	this->m_player = player;
 }
 
-// 
+// Getter for current node's parent index.
+size_t& GameNode::getParentIndex()
+{
+	return this->m_parentIndex;
+}
+
+// Setter for current node's parent index.
+void GameNode::setParentIndex(const size_t& parentIndex)
+{
+	this->m_parentIndex = parentIndex;
+}
+
+// Getter for current node's alpha value.
+const int& GameNode::getAlpha()
+{
+	return this->m_alpha;
+}
+
+// Setter for current node's alpha value.
+void GameNode::setAlpha(const int& alpha)
+{
+	this->m_alpha = alpha;
+}
+
+// Getter for current node's beta value.
+const int& GameNode::getBeta()
+{
+	return this->m_beta;
+}
+
+// Getter for current node's beta value.
+void GameNode::setBeta(const int& beta)
+{
+	this->m_beta = beta;
+}
+
+// Getter for current node's leaf.
+const bool& GameNode::isLeaf()
+{
+	return this->m_leaf;
+}
+
+// Setter for current node's leaf.
+void GameNode::setLeaf(const bool& leaf)
+{
+	this->m_leaf = leaf;
+}
+
+// Copy given OthelloGame object into another existing GameNode object.
 GameNode& GameNode::operator=(OthelloGame& rhs)
 {
 	this->m_board = rhs.getGameState();
@@ -65,19 +129,23 @@ GameNode& GameNode::operator=(OthelloGame& rhs)
 	return *this;
 }
 
-// 
+// Copy given GameNode object into another existing GameNode object.
 GameNode& GameNode::operator=(GameNode& rhs)
 {
 	this->m_board = rhs.getGameState();
 	this->m_score = rhs.getScore();
 	this->m_player = rhs.getPlayer();
+	this->m_alpha = rhs.getAlpha();
+	this->m_beta = rhs.getBeta();
+	this->m_parentIndex = rhs.getParentIndex();
+
 	return *this;
 }
 
 // Create OthelloBot object with specific parameters.
 OthelloBot::OthelloBot(const char& playerDisk, const int& maxDepth, const int& heuristic, const int& moveTime, const OthelloGame& player)
 	: OthelloGame(playerDisk, maxDepth, heuristic, moveTime), m_currentGameNode{ GameNode(playerDisk, maxDepth, heuristic, moveTime, 
-		0, 2, player) }, m_dequeGameNodes{ this->createTree() }, m_player { player }
+		0, 2, player) }, m_dequeGameNodes{ this->createTree() }, m_player{ player }, m_currentDequeIndex{ 0 }, m_timer{ 0 }
 {
 }
 
@@ -86,95 +154,188 @@ OthelloBot::~OthelloBot()
 {
 }
 
-// 
+// Getter for current bot's verion of a player.
 OthelloGame& OthelloBot::getPlayer()
 {
 	return this->m_player;
 }
 
-// 
+// Getter for current bot's deque of game node's.
 std::deque<GameNode> OthelloBot::getDequeGameNodes()
 {
 	return this->m_dequeGameNodes;
 }
 
-// 
+// Updates bot based on player's choice.
 void OthelloBot::updateBot(OthelloGame& player)
 {
 	this->setGameState(player.getGameState());
 	this->m_player = player;
-	// this->m_currentGameNode = *this;
 }
 
-// 
+// Updates bot's m_dequeGameNodes.
+void OthelloBot::updateDeque()
+{
+	while (this->m_currentDequeIndex < this->m_dequeGameNodes.size() && 
+		this->getPlayer().getGameState() != this->m_dequeGameNodes[this->m_currentDequeIndex].getGameState())
+	{
+		++this->m_currentDequeIndex;
+	}
+
+	if (this->m_currentDequeIndex < m_dequeGameNodes.size() && this->m_dequeGameNodes[this->m_currentDequeIndex].getDepth() == this->m_maxDepth)
+	{
+		this->m_currentGameNode = this->m_dequeGameNodes[this->m_currentDequeIndex];
+		this->m_currentDequeIndex = 0;
+		this->m_dequeGameNodes = this->createTree();
+	}
+
+	else if (this->m_currentDequeIndex >= m_dequeGameNodes.size())
+	{
+		this->m_currentDequeIndex = 0;
+		this->m_currentGameNode = this->m_dequeGameNodes[this->m_currentDequeIndex];
+		this->m_dequeGameNodes = this->createTree();
+		this->rateDeque();
+	}
+}
+
+// Make move on a game board based on player's choice.
+void OthelloBot::makeMove(OthelloGame& player)
+{
+	this->updateBot(player);
+	this->m_timer = clock();
+	if (this->getDequeGameNodes().empty())
+	{
+		this->m_dequeGameNodes = this->createTree();
+		this->rateDeque();
+	}
+	else
+		this->updateDeque();
+
+	// find right node
+	size_t bestStateIndex = this->m_currentDequeIndex + 1;
+	while (bestStateIndex < this->m_dequeGameNodes.size() && this->m_currentDequeIndex != this->m_dequeGameNodes[bestStateIndex].getParentIndex())
+	{
+		++bestStateIndex; 
+	}
+
+	// find best child 
+	for (size_t dequeIndex = bestStateIndex + 1; dequeIndex < this->m_dequeGameNodes.size() && 
+		this->m_dequeGameNodes[bestStateIndex].getParentIndex() == this->m_dequeGameNodes[dequeIndex].getParentIndex(); 
+		++dequeIndex)
+	{
+		if (this->m_dequeGameNodes[dequeIndex].getAlpha() > this->m_dequeGameNodes[bestStateIndex].getAlpha())
+		{
+			bestStateIndex = dequeIndex;
+		}
+	}
+
+	// if there is a possible move, make it
+	if (bestStateIndex < this->m_dequeGameNodes.size())
+	{
+		player.setGameState(this->m_dequeGameNodes[bestStateIndex].getGameState());
+		player.setScore(this->m_dequeGameNodes[bestStateIndex].getPlayer().getScore());
+		this->m_score = this->m_dequeGameNodes[bestStateIndex].getScore();
+		this->m_currentDequeIndex = bestStateIndex;
+	}
+}
+
+// Heuristic function - material count.
+void OthelloBot::rateDeque()
+{
+	// rate leafs	
+	for (size_t dequeIndex = this->m_dequeGameNodes.size() - 1; dequeIndex > 0; --dequeIndex)
+	{
+		auto& node = this->m_dequeGameNodes[dequeIndex];
+		
+		if (!node.isLeaf()) continue;
+
+		// minimax value for mini
+		if (node.getDepth() % 2 == 1) node.setBeta(node.getScore());
+
+		// minimax value for max
+		else node.setAlpha(node.getScore());
+	}
+
+	// rate parents
+	for (size_t dequeIndex = this->m_dequeGameNodes.size() - 1; dequeIndex > 0; --dequeIndex)
+	{
+		auto& deque = this->m_dequeGameNodes;
+		auto& node = this->m_dequeGameNodes[dequeIndex];
+
+		if (deque[node.getParentIndex()].getDepth() % 2 == 1 && node.getAlpha() != std::numeric_limits<int>::min()
+			&& deque[node.getParentIndex()].getBeta() > node.getAlpha())
+		{
+			this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha());
+		}
+
+		else if (deque[node.getParentIndex()].getDepth() % 2 == 0 && node.getBeta() != std::numeric_limits<int>::max()
+			&& deque[node.getParentIndex()].getAlpha() < node.getBeta())
+		{
+			this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta());
+		}
+	}
+}
+
+// Init m_dequeGameNodes.
 std::deque<GameNode> OthelloBot::createTree()
 {
-	if (this->m_disk == 'O' && this->m_score == 2) 
+	if (this->m_disk == 'O' && this->m_score == 2 && this->getPlayer().getScore() == 2) 
 		return std::deque<GameNode>();
 
 	this->m_currentGameNode = *this;
 	this->m_currentGameNode.setPlayer(this->getPlayer());
+
 	std::deque<GameNode> dequeGameNodes = { this->m_currentGameNode };
 	const char& opponentDisk = this->getPlayer().getDisk();
 
-	for (int depth = 0, dequeIndex = 0; depth < this->m_maxDepth && !dequeGameNodes.empty(); ++dequeIndex, depth = dequeGameNodes[dequeIndex].getDepth())
+	this->m_timer = clock();
+	for (int dequeIndex = 0; !dequeGameNodes.empty(); ++dequeIndex)
 	{
-		std::cout << "\nDEEEEEEEEEEEPTH: " << depth << '\n';
+		if (static_cast<size_t>(dequeIndex) > dequeGameNodes.size() - 1) 
+			break;
+
+		if (((clock() - this->m_timer) / CLOCKS_PER_SEC) > this->m_moveTime / 2)
+		{
+			std::cout << "TIME: " << (clock() - this->m_timer) / CLOCKS_PER_SEC << '\n';
+			const auto& parent = dequeGameNodes[dequeGameNodes.size() - 1].getParentIndex();
+			for (size_t index = dequeGameNodes.size() - 2; index != parent; --index)
+				dequeGameNodes[index].setLeaf(true);
+			break;
+		}
+
+		const int& depth = dequeGameNodes[dequeIndex].getDepth();
+		if (depth >= this->m_maxDepth) 
+			break;
+
+		std::vector<int> vectorValidMove;
 		if (depth % 2 == 1)
 		{
-			std::vector<int> vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), opponentDisk, this->m_disk, true);
-
-			// if there are not valid moves, game is over
-			if (vectorValidMove.empty())
-			{
-				std::cout << "Empty vector!\n";
-				break;
-			}
-			std::cout << "dequeGameNodes[" << dequeIndex << "]:\n";
-			std::cout << dequeGameNodes[dequeIndex] << '\n';
-
-			for (int validIndexMove : vectorValidMove)
-			{
-				GameNode oldGameState = dequeGameNodes[dequeIndex];
-				dequeGameNodes.push_back(createGameNode(dequeGameNodes[dequeIndex], validIndexMove));
-				dequeGameNodes[dequeIndex] = oldGameState;
-
-				std::cout << "DEQUE[" << dequeGameNodes.size() - 1 << "]:\n";
-				std::cout << dequeGameNodes[dequeGameNodes.size() - 1] << '\n';
-			}
-			continue;
+			vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), opponentDisk, this->m_disk, true);
 		}
-		std::vector<int> vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), this->m_disk, opponentDisk, true);
+		vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), this->m_disk, opponentDisk, true);
 
 		// if there are not valid moves, game is over
 		if (vectorValidMove.empty())
 		{
-			std::cout << "Empty vector!\n";
-			break;
+			dequeGameNodes[dequeIndex].setLeaf(true);
+			continue;
 		}
-		std::cout << "dequeGameNodes[" << dequeIndex << "]:\n";
-		std::cout << dequeGameNodes[dequeIndex] << '\n';
 
 		for (int validIndexMove : vectorValidMove)
 		{
-			GameNode oldGameState = dequeGameNodes[dequeIndex];
+			GameNode oldGameState{ dequeGameNodes[dequeIndex] };
 			dequeGameNodes.push_back(createGameNode(dequeGameNodes[dequeIndex], validIndexMove));
 			dequeGameNodes[dequeIndex] = oldGameState;
-
-			std::cout << "DEQUE[" << dequeGameNodes.size() - 1 << "]:\n";
-			std::cout << dequeGameNodes[dequeGameNodes.size() - 1] << '\n';
+			dequeGameNodes[dequeGameNodes.size() - 1].setParentIndex(dequeIndex);
+			if (dequeGameNodes[dequeGameNodes.size() - 1].getDepth() == this->m_maxDepth)
+				dequeGameNodes[dequeGameNodes.size() - 1].setLeaf(true);
 		}
 	}
-
-	/*for (auto x : dequeGameNodes)
-	{
-		std::cout << x << '\n';
-	}*/
 	return dequeGameNodes;
 }
 
-// 
-GameNode OthelloBot::createGameNode(GameNode& node, const int& validIndexMove)//, const char& disk)
+// Creates a new GameNode for m_dequeGameNodes.
+GameNode OthelloBot::createGameNode(GameNode& node, const int& validIndexMove)
 {
 	if (node.getDepth() % 2 == 1)
 	{
@@ -199,5 +360,11 @@ std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs)
 	}
 	lhs << "\nDepth: " << rhs.m_depth << '\n';
 	printScore(rhs.m_player, rhs);
+
+	lhs << "ALPHA:\n";
+	lhs << rhs.m_alpha << '\n';
+	lhs << "BETA:\n";
+	lhs << rhs.m_beta << '\n';
+
 	return lhs;
 }

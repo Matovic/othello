@@ -1,6 +1,6 @@
 /**
 * Course: Application programming in C++ 2020/2021
-* Purpose: Bot for the game Othello, with console visualization.
+* Purpose: Othello game logic with move operations.
 *
 * @file OthelloGameLogic.hpp
 * @author Erik Matovic
