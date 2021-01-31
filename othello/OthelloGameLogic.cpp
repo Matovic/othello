@@ -207,8 +207,8 @@ std::vector<int> getValidMoves(const std::string& board, const char& disk, const
 // Shows possible moves to the player on game board.
 void showPossibleMoves(std::string& possibleGameState, const std::vector<int>& vectorValidMoves)
 {
-	for (int x : vectorValidMoves)
-		possibleGameState[x] = '*';
+	for (int boardIndex : vectorValidMoves)
+		possibleGameState[boardIndex] = '*';
 	std::cout << '\n';
 	printGameState(possibleGameState);
 }

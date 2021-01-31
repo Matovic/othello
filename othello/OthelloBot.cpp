@@ -166,6 +166,24 @@ std::deque<GameNode> OthelloBot::getDequeGameNodes()
 	return this->m_dequeGameNodes;
 }
 
+// Getter for current bot's index of deque of game node's.
+const size_t& OthelloBot::getDequeGameNodesIndex()
+{
+	return this->m_currentDequeIndex;
+}
+
+// Start counting time for m_timer.
+void OthelloBot::startTimer()
+{
+	this->m_timer = clock();
+}
+
+// Getter for m_timer.
+const clock_t& OthelloBot::getTimer()
+{
+	return this->m_timer;
+}
+
 // Updates bot based on player's choice.
 void OthelloBot::updateBot(OthelloGame& player)
 {
@@ -194,7 +212,7 @@ void OthelloBot::updateDeque()
 		this->m_currentDequeIndex = 0;
 		this->m_currentGameNode = this->m_dequeGameNodes[this->m_currentDequeIndex];
 		this->m_dequeGameNodes = this->createTree();
-		this->rateDeque();
+		this->rateDeque_MaterialCount();
 	}
 }
 
@@ -206,7 +224,7 @@ void OthelloBot::makeMove(OthelloGame& player)
 	if (this->getDequeGameNodes().empty())
 	{
 		this->m_dequeGameNodes = this->createTree();
-		this->rateDeque();
+		this->rateDeque_MaterialCount();
 	}
 	else
 		this->updateDeque();
@@ -239,8 +257,8 @@ void OthelloBot::makeMove(OthelloGame& player)
 	}
 }
 
-// Heuristic function - material count.
-void OthelloBot::rateDeque()
+// Heuristic function - rate deque with material count, meaning with current node's score.
+void OthelloBot::rateDeque_MaterialCount()
 {
 	// rate leafs	
 	for (size_t dequeIndex = this->m_dequeGameNodes.size() - 1; dequeIndex > 0; --dequeIndex)
@@ -312,7 +330,7 @@ std::deque<GameNode> OthelloBot::createTree()
 		{
 			vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), opponentDisk, this->m_disk, true);
 		}
-		vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), this->m_disk, opponentDisk, true);
+		else vectorValidMove = getValidMoves(dequeGameNodes[dequeIndex].getGameState(), this->m_disk, opponentDisk, true);
 
 		// if there are not valid moves, game is over
 		if (vectorValidMove.empty())
@@ -350,21 +368,21 @@ GameNode OthelloBot::createGameNode(GameNode& node, const int& validIndexMove)
 }
 
 // 
-std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs)
-{
-	lhs << "  a b c d e f g h";
-	for (size_t i = 0, row = 0; i < 64; ++i)
-	{
-		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
-		lhs << rhs.m_board[i] << ' ';
-	}
-	lhs << "\nDepth: " << rhs.m_depth << '\n';
-	printScore(rhs.m_player, rhs);
-
-	lhs << "ALPHA:\n";
-	lhs << rhs.m_alpha << '\n';
-	lhs << "BETA:\n";
-	lhs << rhs.m_beta << '\n';
-
-	return lhs;
-}
+//std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs)
+//{
+//	printScore(rhs.m_player, rhs);
+//	lhs << "  a b c d e f g h";
+//	for (size_t i = 0, row = 0; i < 64; ++i)
+//	{
+//		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
+//		lhs << rhs.m_board[i] << ' ';
+//	}
+//	//lhs << "\nDepth: " << rhs.m_depth << '\n';
+//
+//	//lhs << "ALPHA:\n";
+//	//lhs << rhs.m_alpha << '\n';
+//	//lhs << "BETA:\n";
+//	//lhs << rhs.m_beta << '\n';
+//
+//	return lhs;
+//}

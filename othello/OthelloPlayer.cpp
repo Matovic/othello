@@ -23,12 +23,23 @@ OthelloPlayer::~OthelloPlayer()
 {
 }
 
+// Prints welcoming text for user with info about a game.
+void OthelloPlayer::welcomeText()
+{
+	std::cout << "\n\tWelcome at a game of Othello!";
+	std::cout << "\n\n\tTo place a disk simply enter letter of a collumn and number of a row, e.g d3.";
+	std::cout << "\n\tTo stop just type stop.";
+	std::cout << "\n\tTo see the best possible path of choice just enter print.";
+	std::cout << "\n\n\tHave a fun!\n\n";
+}
+
 // Reads user's commands
 void OthelloPlayer::readCommand()
 {
+	this->welcomeText();
 	OthelloBot bot{this->m_disk, this->m_maxDepth, this->m_heuristic, this->m_moveTime, *this};
-
 	printScore(*this, bot);
+
 	if (this->getDisk() == 'O')
 	{
 		std::cout << *this << '\n';
@@ -50,7 +61,11 @@ void OthelloPlayer::readCommand()
 
 		if (!command.compare("PRINT"))
 		{
-			std::cout << "\nThe best path for you is:\n";
+			if (this->printBestPath(bot))
+				std::cout << "\nFirst make a move.\n";
+			printScore(*this, bot);
+			std::string possibleGameState = this->m_board;
+			showPossibleMoves(possibleGameState, vectorValidMove);
 			continue;
 		}
 
@@ -84,4 +99,51 @@ void OthelloPlayer::readCommand()
 			break;
 		}
 	}
+}
+
+// Prints best possible path for player.
+int OthelloPlayer::printBestPath(OthelloBot& bot)
+{
+	if (bot.getDequeGameNodes().empty())
+		return 1;
+	std::cout << "\nThe best path for you is:\n";
+
+	bot.startTimer();
+	for (size_t nodeIndex = bot.getDequeGameNodesIndex(), parentIndex = nodeIndex;
+		nodeIndex < bot.getDequeGameNodes().size(); ++nodeIndex)
+	{
+		if (((clock() - bot.getTimer()) / CLOCKS_PER_SEC) > this->m_moveTime)
+		{
+			std::cout << "No more time to look for another game states.\n\n";
+			return 0;
+		}
+
+		// find right node
+		if (bot.getDequeGameNodes().at(nodeIndex).getParentIndex() != parentIndex)
+			continue;
+
+		// find best child 
+		size_t dequeIndex = nodeIndex + 1;
+		for (; bot.getDequeGameNodes().at(nodeIndex).getParentIndex() == bot.getDequeGameNodes().at(dequeIndex).getParentIndex();
+			++dequeIndex)
+		{
+			if (dequeIndex >= bot.getDequeGameNodes().size())
+			{
+				std::cout << "No more game states are available\n.";
+				return 0;
+			}
+
+			if (bot.getDequeGameNodes().at(parentIndex).getDepth() % 2 == 0 && 
+				bot.getDequeGameNodes().at(dequeIndex).getAlpha() > bot.getDequeGameNodes().at(nodeIndex).getAlpha() || 
+				bot.getDequeGameNodes().at(parentIndex).getDepth() % 2 == 1 &&
+				bot.getDequeGameNodes().at(dequeIndex).getBeta() > bot.getDequeGameNodes().at(nodeIndex).getBeta())
+			{
+				nodeIndex = dequeIndex;
+			}
+		}
+		parentIndex = nodeIndex;
+		nodeIndex = dequeIndex;
+		std::cout << bot.getDequeGameNodes().at(parentIndex) << '\n';
+	}
+	return 0;
 }

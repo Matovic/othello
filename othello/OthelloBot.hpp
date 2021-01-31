@@ -158,8 +158,6 @@ private:
 	int m_alpha, m_beta;
 	size_t m_parentIndex;
 	bool m_leaf;
-
-	friend std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs);
 };
 
 /**
@@ -189,6 +187,12 @@ public:
 	std::deque<GameNode> getDequeGameNodes();
 
 	/**
+	* Getter for current bot's index of deque of game node's.
+	* @return m_currentDequeIndex.
+	*/
+	const size_t& getDequeGameNodesIndex();
+
+	/**
 	* Init m_dequeGameNodes.
 	* @return queue of game node's.
 	*/
@@ -205,6 +209,16 @@ public:
 	* @return m_player.
 	*/
 	OthelloGame& getPlayer();
+
+	/**
+	* Start counting time for m_timer.
+	*/
+	void startTimer();
+
+	/**
+	* Getter for m_timer.
+	*/
+	const clock_t& getTimer();
 
 private:
 	OthelloGame m_player;
@@ -233,8 +247,8 @@ private:
 	void updateDeque();
 
 	/**
-	* Heuristic function - material count.
+	* Heuristic function - rate deque with material count, meaning with current node's score.
 	*/
-	void rateDeque();
+	void rateDeque_MaterialCount();
 };
 

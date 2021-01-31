@@ -41,4 +41,15 @@ public:
 	void readCommand();
 
 private:
+	/**
+	* Prints welcoming text for user with info about a game.
+	*/
+	void welcomeText();
+
+	/**
+	* Prints best possible path for player.
+	* @param bot class for accessing tree structure of possible game states.
+	* @return 0 if possible, otherwise 1.
+	*/
+	int printBestPath(OthelloBot& bot);
 };
