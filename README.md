@@ -16,7 +16,9 @@ To place a disk simply enter letter of a collumn and number of a row, e.g `d3`.
 To stop just type `stop`.  
 To see the best possible path of choice just enter `print`.
 
-![othello_game_example.png](./images/othello_game_example.png)
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+<p align="center">
+	<img src="./images/othello_game_example.png">
+	<img src="./images/othello_game_example2.png">
+	<img src="./images/othello_game_example3.png">
+	<img src="./images/othello_print_example.png">
+</p>
