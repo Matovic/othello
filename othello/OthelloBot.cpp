@@ -212,7 +212,7 @@ void OthelloBot::updateDeque()
 		this->m_currentDequeIndex = 0;
 		this->m_currentGameNode = this->m_dequeGameNodes[this->m_currentDequeIndex];
 		this->m_dequeGameNodes = this->createTree();
-		this->rateDeque_MaterialCount();
+		this->rateDeque();
 	}
 }
 
@@ -224,7 +224,7 @@ void OthelloBot::makeMove(OthelloGame& player)
 	if (this->getDequeGameNodes().empty())
 	{
 		this->m_dequeGameNodes = this->createTree();
-		this->rateDeque_MaterialCount();
+		this->rateDeque();
 	}
 	else
 		this->updateDeque();
@@ -241,7 +241,7 @@ void OthelloBot::makeMove(OthelloGame& player)
 		this->m_dequeGameNodes[bestStateIndex].getParentIndex() == this->m_dequeGameNodes[dequeIndex].getParentIndex(); 
 		++dequeIndex)
 	{
-		if (this->m_dequeGameNodes[dequeIndex].getAlpha() > this->m_dequeGameNodes[bestStateIndex].getAlpha())
+		if (this->m_dequeGameNodes[dequeIndex].getBeta() > this->m_dequeGameNodes[bestStateIndex].getBeta())
 		{
 			bestStateIndex = dequeIndex;
 		}
@@ -257,14 +257,13 @@ void OthelloBot::makeMove(OthelloGame& player)
 	}
 }
 
-// Heuristic function - rate deque with material count, meaning with current node's score.
-void OthelloBot::rateDeque_MaterialCount()
+// Rate leafs for heuristic function.
+void OthelloBot::rateLeafs()
 {
-	// rate leafs	
 	for (size_t dequeIndex = this->m_dequeGameNodes.size() - 1; dequeIndex > 0; --dequeIndex)
 	{
 		auto& node = this->m_dequeGameNodes[dequeIndex];
-		
+
 		if (!node.isLeaf()) continue;
 
 		// minimax value for mini
@@ -273,25 +272,94 @@ void OthelloBot::rateDeque_MaterialCount()
 		// minimax value for max
 		else node.setAlpha(node.getScore());
 	}
+}
 
-	// rate parents
+// Determines if disk is stable and therefore in corner.
+int OthelloBot::determineStableDisk(GameNode& node)
+{
+	char disk = node.getDisk();
+	if (node.getDepth() % 2 == 1)
+		disk = node.getPlayer().getDisk();
+
+	// parent left up corner was free and now is taken by player
+	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(0) == '-'
+		&& node.getGameState().at(0) == disk)
+		return 1;
+
+	// parent right up corner was free and now is taken by player
+	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(7) == '-'
+		&& node.getGameState().at(7) == disk)
+		return 1;
+
+	// parent left down corner was free and now is taken by player
+	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(56) == '-'
+		&& node.getGameState().at(56) == disk)
+		return 1;
+
+	// parent right down corner was free and now is taken by player
+	if (this->m_dequeGameNodes[node.getParentIndex()].getGameState().at(63) == '-'
+		&& node.getGameState().at(63) == disk)
+		return 1;
+
+	return 0;
+}
+
+// Rate parents for heuristic function.
+void OthelloBot::rateParents(const int heuristicConstant)
+{
 	for (size_t dequeIndex = this->m_dequeGameNodes.size() - 1; dequeIndex > 0; --dequeIndex)
 	{
 		auto& deque = this->m_dequeGameNodes;
 		auto& node = this->m_dequeGameNodes[dequeIndex];
 
+		// alpha - bot's decision
 		if (deque[node.getParentIndex()].getDepth() % 2 == 1 && node.getAlpha() != std::numeric_limits<int>::min()
 			&& deque[node.getParentIndex()].getBeta() > node.getAlpha())
 		{
-			this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha());
+			// heuristic is 2 and therefore check out corners and determine stable disk
+			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(node))
+				this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha() * heuristicConstant);
+
+			// heuristic is 2 and therefore it is material count
+			else this->m_dequeGameNodes[node.getParentIndex()].setBeta(node.getAlpha());
 		}
 
+		// beta - bot's prediction for player
 		else if (deque[node.getParentIndex()].getDepth() % 2 == 0 && node.getBeta() != std::numeric_limits<int>::max()
 			&& deque[node.getParentIndex()].getAlpha() < node.getBeta())
 		{
-			this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta());
+			// heuristic is 2 and therefore check out corners and determine stable disk
+			if (heuristicConstant == HeuristicConstant::CORNERS && this->determineStableDisk(node))
+				this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta() * heuristicConstant);
+
+			// heuristic is 2 and therefore it is material count
+			else this->m_dequeGameNodes[node.getParentIndex()].setAlpha(node.getBeta());
 		}
 	}
+}
+
+// Heuristic function - rate deque with material count, meaning with current node's score.
+void OthelloBot::rateDeque_MaterialCount()
+{
+	this->rateLeafs();
+	this->rateParents(HeuristicConstant::MATERIAL_COUNT);
+}
+
+// Heuristic function - rate deque on a base of corners.
+void OthelloBot::rateDeque_Corners()
+{
+	this->rateLeafs();
+	this->rateParents(HeuristicConstant::CORNERS);
+}
+
+// Determines heuristic function based on given command line argument.
+void OthelloBot::rateDeque()
+{
+	if (this->m_heuristic == 1)
+		this->rateDeque_MaterialCount();
+
+	else if (this->m_heuristic == 2)
+		this->rateDeque_Corners();
 }
 
 // Init m_dequeGameNodes.
@@ -366,23 +434,3 @@ GameNode OthelloBot::createGameNode(GameNode& node, const int& validIndexMove)
 
 	return GameNode(node, node.getPlayer(), node.getDepth() + 1);
 }
-
-// 
-//std::ostream& operator<<(std::ostream& lhs, const GameNode& rhs)
-//{
-//	printScore(rhs.m_player, rhs);
-//	lhs << "  a b c d e f g h";
-//	for (size_t i = 0, row = 0; i < 64; ++i)
-//	{
-//		if (i % 8 == 0)	lhs << '\n' << ++row << ' ';
-//		lhs << rhs.m_board[i] << ' ';
-//	}
-//	//lhs << "\nDepth: " << rhs.m_depth << '\n';
-//
-//	//lhs << "ALPHA:\n";
-//	//lhs << rhs.m_alpha << '\n';
-//	//lhs << "BETA:\n";
-//	//lhs << rhs.m_beta << '\n';
-//
-//	return lhs;
-//}

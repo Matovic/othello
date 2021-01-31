@@ -11,9 +11,18 @@
 
 #include <string>
 #include <deque>
-#include <memory>
 #include <ctime>
 #include "OthelloGame.hpp"
+
+/**
+* Struct heuristicConstant representing all posible heuristic constants for the game.
+*/
+struct HeuristicConstant
+{
+	static const int
+		MATERIAL_COUNT = 1,
+		CORNERS = 2;
+};
 
 /**
 * Class GameNode representing possible game state
@@ -247,8 +256,35 @@ private:
 	void updateDeque();
 
 	/**
+	* Determines heuristic function based on given command line argument.
+	*/
+	void rateDeque();
+
+	/**
 	* Heuristic function - rate deque with material count, meaning with current node's score.
 	*/
 	void rateDeque_MaterialCount();
+
+	/**
+	* Heuristic function - rate deque on a base of corners.
+	*/
+	void rateDeque_Corners();
+
+	/**
+	* Rate leafs for heuristic function.
+	*/
+	void rateLeafs();
+
+	/**
+	* Rate parents for heuristic function.
+	* @param heuristicConstant to determine rating
+	*/
+	void rateParents(const int heuristicConstant);
+	
+	/**
+	* Determines if disk is stable and therefore in corner.
+	* @param node to be examine.
+	*/
+	int determineStableDisk(GameNode& node);
 };
 
