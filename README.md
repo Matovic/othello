@@ -1,5 +1,6 @@
-# An Othello game with visualization via command line and with a game bot using alpha–beta pruning algorithm over minimax
-School assignment n. 9 from course Application programming in C++ in third bachelor semester.
+# Othello  
+An Othello game with visualization via command line and with a game bot using alpha–beta pruning algorithm over minimax.   
+School assignment n. 9 from course Application programming in C++ in third bachelor semester.  
 
 ## Usage
 ```bash
